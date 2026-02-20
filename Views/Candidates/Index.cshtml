@@ -72,7 +72,7 @@
                         <td>
                             @if(!string.IsNullOrEmpty(item.ResumePath))
                             {
-                                <a href="#" class="text-primary small"><i class="fas fa-file-pdf me-1"></i> View</a>
+                                <a href="@item.ResumePath" target="_blank" class="text-primary small"><i class="fas fa-file-pdf me-1"></i> View</a>
                             }
                             else
                             {

@@ -56,7 +56,7 @@
                         <p class="mb-0">
                             @if (!string.IsNullOrEmpty(Model.ResumePath))
                             {
-                                <a href="~/uploads/@Model.ResumePath" target="_blank" class="text-primary text-decoration-none">
+                                <a href="@Model.ResumePath" target="_blank" class="text-primary text-decoration-none">
                                     <i class="fas fa-file-pdf me-1"></i> View Resume
                                 </a>
                             }
