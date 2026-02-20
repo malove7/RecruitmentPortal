@@ -1,0 +1,153 @@
+﻿@model RecruitmentPortal.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Recruitment Dashboard</h1>
+    <hr />
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Candidates</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalCandidates</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Open Positions</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalOpenPositions</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-briefcase fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Interviews Today</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.InterviewsScheduledToday</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar px-2 fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Feedback</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingFeedbacks</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <!-- Recent Candidates -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Candidates</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var candidate in Model.RecentCandidates)
+                                {
+                                    <tr>
+                                        <td>@candidate.FirstName @candidate.LastName</td>
+                                        <td>@candidate.JobPosition?.Title</td>
+                                        <td><span class="badge bg-secondary">@candidate.Status</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (!Model.RecentCandidates.Any())
+                    {
+                        <p class="text-center">No recent candidates found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Interviews -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Upcoming Interviews</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Candidate</th>
+                                    <th>Interviewer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var interview in Model.UpcomingInterviews)
+                                {
+                                    <tr>
+                                        <td>@interview.ScheduledTime.ToString("g")</td>
+                                        <td>@interview.Candidate?.FirstName @interview.Candidate?.LastName</td>
+                                        <td>@interview.Interviewer?.Name</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (!Model.UpcomingInterviews.Any())
+                    {
+                        <p class="text-center">No upcoming interviews.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
