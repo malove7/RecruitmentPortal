@@ -18,8 +18,8 @@
 
                 <div class="bg-light p-3 rounded mb-4 text-start">
                     <dl class="row mb-0">
-                         <dt class="col-sm-4 text-muted small text-uppercase">Interview ID</dt>
-                        <dd class="col-sm-8 mb-2">#@Model.InterviewId</dd>
+                         <dt class="col-sm-4 text-muted small text-uppercase">Interview</dt>
+                        <dd class="col-sm-8 mb-2">@Model.Interview.Round - @(Model.Interview.Candidate != null ? $"{Model.Interview.Candidate.FirstName} {Model.Interview.Candidate.LastName}" : $"#{Model.InterviewId}")</dd>
 
                         <dt class="col-sm-4 text-muted small text-uppercase">Rating</dt>
                         <dd class="col-sm-8 mb-2 text-warning">

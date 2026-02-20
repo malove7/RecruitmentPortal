@@ -31,7 +31,7 @@
             @foreach (var item in Model) {
                     <tr>
                          <td class="ps-4">
-                            <span class="fw-medium">#@Html.DisplayFor(modelItem => item.Interview.Id)</span>
+                            <span class="fw-medium">@item.Interview.Round - @(item.Interview.Candidate != null ? $"{item.Interview.Candidate.FirstName} {item.Interview.Candidate.LastName}" : "Unknown")</span>
                         </td>
                         <td>
                             <div class="text-warning">

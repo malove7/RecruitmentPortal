@@ -23,7 +23,7 @@
                         <i class="fas fa-comment-alt"></i>
                     </div>
                     <div>
-                        <h4 class="mb-1">Feedback for Interview #@Model.InterviewId</h4>
+                        <h4 class="mb-1">Feedback for @Model.Interview.Round - @(Model.Interview.Candidate != null ? $"{Model.Interview.Candidate.FirstName} {Model.Interview.Candidate.LastName}" : $"Interview #{Model.InterviewId}")</h4>
                         <div class="text-muted">
                             <i class="far fa-clock me-1"></i> @Model.CreatedDate.ToString("MMM dd, yyyy")
                         </div>

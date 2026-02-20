@@ -22,7 +22,9 @@ namespace RecruitmentPortal.Controllers
         // GET: Feedbacks
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Feedbacks.Include(f => f.Interview);
+            var applicationDbContext = _context.Feedbacks
+                .Include(f => f.Interview)
+                    .ThenInclude(i => i.Candidate);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,6 +38,7 @@ namespace RecruitmentPortal.Controllers
 
             var feedback = await _context.Feedbacks
                 .Include(f => f.Interview)
+                    .ThenInclude(i => i.Candidate)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (feedback == null)
             {
@@ -48,7 +51,7 @@ namespace RecruitmentPortal.Controllers
         // GET: Feedbacks/Create
         public IActionResult Create()
         {
-            ViewData["InterviewId"] = new SelectList(_context.Interviews, "Id", "Id");
+            PopulateInterviewsDropDownList();
             return View();
         }
 
@@ -66,7 +69,7 @@ namespace RecruitmentPortal.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InterviewId"] = new SelectList(_context.Interviews, "Id", "Id", feedback.InterviewId);
+            PopulateInterviewsDropDownList(feedback.InterviewId);
             return View(feedback);
         }
 
@@ -83,7 +86,7 @@ namespace RecruitmentPortal.Controllers
             {
                 return NotFound();
             }
-            ViewData["InterviewId"] = new SelectList(_context.Interviews, "Id", "Id", feedback.InterviewId);
+            PopulateInterviewsDropDownList(feedback.InterviewId);
             return View(feedback);
         }
 
@@ -130,7 +133,7 @@ namespace RecruitmentPortal.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InterviewId"] = new SelectList(_context.Interviews, "Id", "Id", feedback.InterviewId);
+            PopulateInterviewsDropDownList(feedback.InterviewId);
             return View(feedback);
         }
 
@@ -144,6 +147,7 @@ namespace RecruitmentPortal.Controllers
 
             var feedback = await _context.Feedbacks
                 .Include(f => f.Interview)
+                    .ThenInclude(i => i.Candidate)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (feedback == null)
             {
@@ -171,6 +175,20 @@ namespace RecruitmentPortal.Controllers
         private bool FeedbackExists(int id)
         {
             return _context.Feedbacks.Any(e => e.Id == id);
+        }
+
+        private void PopulateInterviewsDropDownList(object selectedInterview = null)
+        {
+            var interviewsQuery = _context.Interviews
+                .Include(i => i.Candidate)
+                .Select(i => new
+                {
+                    Id = i.Id,
+                    DisplayText = i.Round.ToString() + " - " + (i.Candidate != null ? i.Candidate.FirstName + " " + i.Candidate.LastName : "Unknown Candidate")
+                })
+                .OrderBy(i => i.DisplayText);
+
+            ViewData["InterviewId"] = new SelectList(interviewsQuery.AsNoTracking(), "Id", "DisplayText", selectedInterview);
         }
     }
 }
