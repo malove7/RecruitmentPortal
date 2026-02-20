@@ -51,6 +51,50 @@
                         </div>
                     </div>
 
+                    <h5 class="mb-4 text-primary">Additional Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="DOB" class="form-label">Date of Birth</label>
+                            <input asp-for="DOB" type="date" class="form-control" />
+                            <span asp-validation-for="DOB" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="HighestEducation" class="form-label">Highest Education</label>
+                            <input asp-for="HighestEducation" class="form-control" placeholder="e.g. BCA, MCA, B.Tech" />
+                            <span asp-validation-for="HighestEducation" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CurrentLocation" class="form-label">Current Location</label>
+                            <input asp-for="CurrentLocation" class="form-control" placeholder="e.g. Gandhinagar, Gujarat" />
+                            <span asp-validation-for="CurrentLocation" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="NoticePeriod" class="form-label">Notice Period</label>
+                            <input asp-for="NoticePeriod" class="form-control" placeholder="e.g. 30 Days" />
+                            <span asp-validation-for="NoticePeriod" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-12">
+                            <label asp-for="Experience" class="form-label">Experience</label>
+                            <input asp-for="Experience" class="form-control" placeholder="e.g. 1.7 Years (.NET / SQL Server / MVC)" />
+                            <span asp-validation-for="Experience" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CurrentCTC" class="form-label">Current CTC (Per Month)</label>
+                            <input asp-for="CurrentCTC" class="form-control" placeholder="e.g. ₹2,80,000" />
+                            <span asp-validation-for="CurrentCTC" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ExpectedCTC" class="form-label">Expected CTC (Per Month)</label>
+                            <input asp-for="ExpectedCTC" class="form-control" placeholder="e.g. As per expectation" />
+                            <span asp-validation-for="ExpectedCTC" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-12">
+                            <label asp-for="ReasonForChange" class="form-label">Reason for Job Change</label>
+                            <textarea asp-for="ReasonForChange" class="form-control" rows="3" placeholder="e.g. Looking for better growth opportunities"></textarea>
+                            <span asp-validation-for="ReasonForChange" class="text-danger small"></span>
+                        </div>
+                    </div>
+
                     <h5 class="mb-4 text-primary">Application Details</h5>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
@@ -65,6 +109,15 @@
                             <input type="file" name="resumeFile" class="form-control" />
                             <div class="form-text">PDF, DOC, or DOCX formats allowed.</div>
                             <span asp-validation-for="ResumePath" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-4 text-primary mt-4">Notes</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label asp-for="NewNote" class="form-label">Initial Note</label>
+                            <textarea asp-for="NewNote" class="form-control" rows="3" placeholder="Enter an initial note (optional)..."></textarea>
+                            <span asp-validation-for="NewNote" class="text-danger small"></span>
                         </div>
                     </div>
                     

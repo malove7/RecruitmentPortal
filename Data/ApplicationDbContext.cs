@@ -15,6 +15,7 @@ namespace RecruitmentPortal.Data
         public DbSet<Interviewer> Interviewers { get; set; }
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<CandidateNote> CandidateNotes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

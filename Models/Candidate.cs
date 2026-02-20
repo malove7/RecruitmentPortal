@@ -44,6 +44,34 @@ namespace RecruitmentPortal.Models
         [ForeignKey("JobPositionId")]
         public JobPosition? JobPosition { get; set; }
 
+        [StringLength(100)]
+        public string? CurrentLocation { get; set; }
+
+        [StringLength(50)]
+        public string? NoticePeriod { get; set; }
+
+        [StringLength(100)]
+        public string? Experience { get; set; }
+
+        [StringLength(500)]
+        public string? ReasonForChange { get; set; }
+
+        [StringLength(50)]
+        public string? CurrentCTC { get; set; }
+
+        [StringLength(50)]
+        public string? ExpectedCTC { get; set; }
+
+        [StringLength(100)]
+        public string? HighestEducation { get; set; }
+
+        public DateTime? DOB { get; set; }
+
         public ICollection<Interview>? Interviews { get; set; }
+
+        public ICollection<CandidateNote>? Notes { get; set; }
+
+        [NotMapped]
+        public string? NewNote { get; set; }
     }
 }

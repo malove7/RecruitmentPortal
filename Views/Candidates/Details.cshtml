@@ -48,10 +48,42 @@
                         <p class="mb-0 fw-medium">@Model.JobPosition?.Title</p>
                     </div>
                     <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Date of Birth</label>
+                        <p class="mb-0 fw-medium">@(Model.DOB?.ToString("MMM dd, yyyy") ?? "N/A")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Current Location</label>
+                        <p class="mb-0 fw-medium">@(string.IsNullOrEmpty(Model.CurrentLocation) ? "N/A" : Model.CurrentLocation)</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Experience</label>
+                        <p class="mb-0 fw-medium">@(string.IsNullOrEmpty(Model.Experience) ? "N/A" : Model.Experience)</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Highest Education</label>
+                        <p class="mb-0 fw-medium">@(string.IsNullOrEmpty(Model.HighestEducation) ? "N/A" : Model.HighestEducation)</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Notice Period</label>
+                        <p class="mb-0 fw-medium">@(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod)</p>
+                    </div>
+                    <div class="col-md-6">
                         <label class="text-muted text-uppercase small fw-bold mb-1">Applied Date</label>
                         <p class="mb-0 fw-medium">@Model.AppliedDate.ToString("MMM dd, yyyy")</p>
                     </div>
                     <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Current CTC</label>
+                        <p class="mb-0 fw-medium">@(string.IsNullOrEmpty(Model.CurrentCTC) ? "N/A" : Model.CurrentCTC)</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Expected CTC</label>
+                        <p class="mb-0 fw-medium">@(string.IsNullOrEmpty(Model.ExpectedCTC) ? "N/A" : Model.ExpectedCTC)</p>
+                    </div>
+                    <div class="col-12">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Reason for Change</label>
+                        <p class="mb-0 fw-medium">@(string.IsNullOrEmpty(Model.ReasonForChange) ? "N/A" : Model.ReasonForChange)</p>
+                    </div>
+                    <div class="col-12">
                         <label class="text-muted text-uppercase small fw-bold mb-1">Resume</label>
                         <p class="mb-0">
                             @if (!string.IsNullOrEmpty(Model.ResumePath))
@@ -67,6 +99,31 @@
                         </p>
                     </div>
                 </div>
+                
+                <h5 class="mt-4 mb-3 pb-2 border-bottom text-primary">Notes Timeline</h5>
+                @if (Model.Notes != null && Model.Notes.Any())
+                {
+                    <div class="timeline mt-3">
+                        @foreach (var note in Model.Notes.OrderByDescending(n => n.CreatedAt))
+                        {
+                            <div class="card mb-3 shadow-sm border-start border-4 border-info">
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-light text-dark border"><i class="far fa-clock me-1"></i>@note.CreatedAt.ToString("MMM dd, yyyy HH:mm")</span>
+                                    </div>
+                                    <p class="card-text mb-0 fs-6">@note.NoteText</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-light text-muted border" role="alert">
+                        <i class="fas fa-info-circle me-2"></i> No notes recorded for this candidate.
+                    </div>
+                }
+
             </div>
             <div class="card-footer bg-light p-3 d-flex justify-content-end">
                 <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary px-4">

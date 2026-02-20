@@ -45,6 +45,7 @@
                         <th class="border-top-0 text-muted small text-uppercase">Candidate Name</th>
                         <th class="border-top-0 text-muted small text-uppercase">Contact Info</th>
                         <th class="border-top-0 text-muted small text-uppercase">Position</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Exp / Notice</th>
                         <th class="border-top-0 text-muted small text-uppercase">Resume</th>
                         <th class="border-top-0 text-muted small text-uppercase">Applied Date</th>
                         <th class="border-top-0 text-muted small text-uppercase">Status</th>
@@ -68,6 +69,10 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.JobPosition.Title)
+                        </td>
+                        <td>
+                            <div class="small text-truncate" style="max-width: 150px;" title="@item.Experience">@(string.IsNullOrEmpty(item.Experience) ? "N/A" : item.Experience)</div>
+                            <div class="small text-muted">@(string.IsNullOrEmpty(item.NoticePeriod) ? "N/A" : item.NoticePeriod)</div>
                         </td>
                         <td>
                             @if(!string.IsNullOrEmpty(item.ResumePath))

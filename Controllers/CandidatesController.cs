@@ -51,6 +51,7 @@ namespace RecruitmentPortal.Controllers
 
             var candidate = await _context.Candidates
                 .Include(c => c.JobPosition)
+                .Include(c => c.Notes)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (candidate == null)
             {
@@ -72,7 +73,7 @@ namespace RecruitmentPortal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Phone,JobPositionId")] Candidate candidate, IFormFile? resumeFile)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Phone,JobPositionId,CurrentLocation,NoticePeriod,Experience,ReasonForChange,CurrentCTC,ExpectedCTC,HighestEducation,DOB,NewNote")] Candidate candidate, IFormFile? resumeFile)
         {
             if (ModelState.IsValid)
             {
@@ -99,6 +100,18 @@ namespace RecruitmentPortal.Controllers
                 candidate.AppliedDate = DateTime.Now;
                 candidate.Status = CandidateStatus.Applied;
 
+                if (!string.IsNullOrWhiteSpace(candidate.NewNote))
+                {
+                    candidate.Notes = new List<CandidateNote>
+                    {
+                        new CandidateNote
+                        {
+                            NoteText = candidate.NewNote,
+                            CreatedAt = DateTime.Now
+                        }
+                    };
+                }
+
                 _context.Add(candidate);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -115,7 +128,9 @@ namespace RecruitmentPortal.Controllers
                 return NotFound();
             }
 
-            var candidate = await _context.Candidates.FindAsync(id);
+            var candidate = await _context.Candidates
+                .Include(c => c.Notes)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (candidate == null)
             {
                 return NotFound();
@@ -129,7 +144,7 @@ namespace RecruitmentPortal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Phone,JobPositionId")] Candidate candidate)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Phone,JobPositionId,CurrentLocation,NoticePeriod,Experience,ReasonForChange,CurrentCTC,ExpectedCTC,HighestEducation,DOB,NewNote")] Candidate candidate)
         {
             if (id != candidate.Id)
             {
@@ -151,6 +166,26 @@ namespace RecruitmentPortal.Controllers
                     existingCandidate.Email = candidate.Email;
                     existingCandidate.Phone = candidate.Phone;
                     existingCandidate.JobPositionId = candidate.JobPositionId;
+                    
+                    existingCandidate.CurrentLocation = candidate.CurrentLocation;
+                    existingCandidate.NoticePeriod = candidate.NoticePeriod;
+                    existingCandidate.Experience = candidate.Experience;
+                    existingCandidate.ReasonForChange = candidate.ReasonForChange;
+                    existingCandidate.CurrentCTC = candidate.CurrentCTC;
+                    existingCandidate.ExpectedCTC = candidate.ExpectedCTC;
+                    existingCandidate.HighestEducation = candidate.HighestEducation;
+                    existingCandidate.DOB = candidate.DOB;
+                    
+                    if (!string.IsNullOrWhiteSpace(candidate.NewNote))
+                    {
+                        var newNote = new CandidateNote
+                        {
+                            CandidateId = existingCandidate.Id,
+                            NoteText = candidate.NewNote,
+                            CreatedAt = DateTime.Now
+                        };
+                        _context.CandidateNotes.Add(newNote);
+                    }
                     
                     // ResumePath, AppliedDate, Status are preserved
 

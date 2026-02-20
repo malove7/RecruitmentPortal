@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecruitmentPortal.Data;
 
@@ -11,9 +12,11 @@ using RecruitmentPortal.Data;
 namespace RecruitmentPortal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260220121230_AddCandidateExtraFields")]
+    partial class AddCandidateExtraFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,31 +102,6 @@ namespace RecruitmentPortal.Migrations
                     b.HasIndex("JobPositionId");
 
                     b.ToTable("Candidates");
-                });
-
-            modelBuilder.Entity("RecruitmentPortal.Models.CandidateNote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CandidateId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NoteText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CandidateId");
-
-                    b.ToTable("CandidateNotes");
                 });
 
             modelBuilder.Entity("RecruitmentPortal.Models.Feedback", b =>
@@ -259,17 +237,6 @@ namespace RecruitmentPortal.Migrations
                     b.Navigation("JobPosition");
                 });
 
-            modelBuilder.Entity("RecruitmentPortal.Models.CandidateNote", b =>
-                {
-                    b.HasOne("RecruitmentPortal.Models.Candidate", "Candidate")
-                        .WithMany("Notes")
-                        .HasForeignKey("CandidateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Candidate");
-                });
-
             modelBuilder.Entity("RecruitmentPortal.Models.Feedback", b =>
                 {
                     b.HasOne("RecruitmentPortal.Models.Interview", "Interview")
@@ -303,8 +270,6 @@ namespace RecruitmentPortal.Migrations
             modelBuilder.Entity("RecruitmentPortal.Models.Candidate", b =>
                 {
                     b.Navigation("Interviews");
-
-                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("RecruitmentPortal.Models.Interview", b =>
