@@ -4,62 +4,75 @@
     ViewData["Title"] = "Candidate Details";
 }
 
-<h1>Candidate Details</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="page-title mb-0">Candidate Details</h1>
+                <p class="text-muted mb-0">View full candidate profile.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ResumePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ResumePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AppliedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AppliedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.JobPosition)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.JobPosition.Description)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
+                    <div class="avatar bg-soft-primary text-primary rounded-circle me-3 display-5 fw-bold" style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center;">
+                        @Model.FirstName.Substring(0,1)@Model.LastName.Substring(0,1)
+                    </div>
+                    <div>
+                        <h4 class="mb-1">@Model.FirstName @Model.LastName</h4>
+                        <div class="text-muted"><i class="far fa-envelope me-2"></i>@Model.Email</div>
+                    </div>
+                    <div class="ms-auto">
+                        @{
+                            var statusBadge = "bg-secondary";
+                            if (Model.Status == RecruitmentPortal.Models.CandidateStatus.Applied) statusBadge = "bg-info";
+                            else if (Model.Status == RecruitmentPortal.Models.CandidateStatus.InterviewScheduled) statusBadge = "bg-primary";
+                            else if (Model.Status == RecruitmentPortal.Models.CandidateStatus.Rejected) statusBadge = "bg-danger";
+                            else if (Model.Status == RecruitmentPortal.Models.CandidateStatus.Hired) statusBadge = "bg-success";
+                        }
+                        <span class="badge @statusBadge fs-6 px-3 py-2 rounded-pill">@Model.Status</span>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Phone</label>
+                        <p class="mb-0 fw-medium">@(Model.Phone ?? "N/A")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Applying For</label>
+                        <p class="mb-0 fw-medium">@Model.JobPosition?.Title</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Applied Date</label>
+                        <p class="mb-0 fw-medium">@Model.AppliedDate.ToString("MMM dd, yyyy")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted text-uppercase small fw-bold mb-1">Resume</label>
+                        <p class="mb-0">
+                            @if (!string.IsNullOrEmpty(Model.ResumePath))
+                            {
+                                <a href="~/uploads/@Model.ResumePath" target="_blank" class="text-primary text-decoration-none">
+                                    <i class="fas fa-file-pdf me-1"></i> View Resume
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No resume uploaded</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light p-3 d-flex justify-content-end">
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary px-4">
+                    <i class="fas fa-edit me-1"></i> Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

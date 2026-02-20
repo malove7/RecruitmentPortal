@@ -4,59 +4,111 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RecruitmentPortal</title>
-    <script type="importmap"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <!-- Custom Theme Styles -->
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sidebar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RecruitmentPortal.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RecruitmentPortal</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Candidates" asp-action="Index">Candidates</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="JobPositions" asp-action="Index">Job Positions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Interviewers" asp-action="Index">Interviewers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Interviews" asp-action="Index">Interviews</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Feedbacks" asp-action="Index">Feedback</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <div class="d-flex" style="min-height: 100vh;">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a class="sidebar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-cube text-primary"></i>
+                    <span>RecruitmentPortal</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
+                           asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-th-large"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Candidates" ? "active" : "")" 
+                           asp-area="" asp-controller="Candidates" asp-action="Index">
+                            <i class="fas fa-users"></i>
+                            <span>Candidates</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "JobPositions" ? "active" : "")" 
+                           asp-area="" asp-controller="JobPositions" asp-action="Index">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Positions</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Interviewers" ? "active" : "")" 
+                           asp-area="" asp-controller="Interviewers" asp-action="Index">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Interviewers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Interviews" ? "active" : "")" 
+                           asp-area="" asp-controller="Interviews" asp-action="Index">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Interviews</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Feedbacks" ? "active" : "")" 
+                           asp-area="" asp-controller="Feedbacks" asp-action="Index">
+                            <i class="fas fa-comment-dots"></i>
+                            <span>Feedback</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <div class="d-flex flex-column">
+                        <span class="font-weight-bold">Admin User</span>
+                        <small class="text-muted" style="font-size: 0.7rem;">admin@portal.com</small>
+                    </div>
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-0">
+                @RenderBody()
+            </div>
+            
+            <footer class="mt-5 text-muted text-center text-small">
+                &copy; 2026 - RecruitmentPortal - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </footer>
         </main>
     </div>
+    
+    <!-- Mobile Toggle Button (Visible only on mobile) -->
+    <button class="sidebar-toggler" type="button" onclick="document.getElementById('sidebar').classList.toggle('show')">
+        <i class="fas fa-bars"></i>
+    </button>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - RecruitmentPortal - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

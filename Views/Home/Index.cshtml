@@ -4,148 +4,141 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="container-fluid">
-    <h1 class="mt-4">Recruitment Dashboard</h1>
-    <hr />
+<div class="dashboard-header">
+    <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Welcome back, here's what's happening today.</p>
+    </div>
+    <div>
+        <a asp-controller="Candidates" asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Add Candidate
+        </a>
+    </div>
+</div>
 
-    <!-- Stats Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Candidates</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalCandidates</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon primary">
+            <i class="fas fa-users"></i>
         </div>
+        <div class="stat-value">@Model.TotalCandidates</div>
+        <div class="stat-label">Total Candidates</div>
+    </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Open Positions</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalOpenPositions</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-briefcase fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="stat-card">
+        <div class="stat-icon success">
+            <i class="fas fa-briefcase"></i>
         </div>
+        <div class="stat-value">@Model.TotalOpenPositions</div>
+        <div class="stat-label">Open Positions</div>
+    </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Interviews Today</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.InterviewsScheduledToday</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar px-2 fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="stat-card">
+        <div class="stat-icon info">
+            <i class="fas fa-calendar-check"></i>
         </div>
+        <div class="stat-value">@Model.InterviewsScheduledToday</div>
+        <div class="stat-label">Interviews Today</div>
+    </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Feedback</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingFeedbacks</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+    <div class="stat-card">
+        <div class="stat-icon warning">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="stat-value">@Model.PendingFeedbacks</div>
+        <div class="stat-label">Pending Feedback</div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Candidates -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="m-0">Recent Candidates</h6>
+                <a asp-controller="Candidates" asp-action="Index" class="text-sm text-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0">Name</th>
+                                <th class="border-top-0">Position</th>
+                                <th class="border-top-0">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var candidate in Model.RecentCandidates)
+                            {
+                                <tr>
+                                    <td class="font-weight-medium">@candidate.FirstName @candidate.LastName</td>
+                                    <td class="text-muted">@candidate.JobPosition?.Title</td>
+                                    <td>
+                                        @{
+                                            var statusClass = candidate.Status switch
+                                            {
+                                                RecruitmentPortal.Models.CandidateStatus.Applied => "badge-blue",
+                                                RecruitmentPortal.Models.CandidateStatus.InReview => "badge-info", // using badge-blue for applied, maybe info for review
+                                                RecruitmentPortal.Models.CandidateStatus.InterviewScheduled => "badge-yellow",
+                                                RecruitmentPortal.Models.CandidateStatus.Offered => "badge-success",
+                                                RecruitmentPortal.Models.CandidateStatus.Hired => "badge-success",
+                                                RecruitmentPortal.Models.CandidateStatus.Rejected => "badge-red",
+                                                _ => "badge-gray"
+                                            };
+                                        }
+                                        <span class="badge @statusClass">@candidate.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.RecentCandidates.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-muted">No recent candidates found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Content Row -->
-    <div class="row">
-
-        <!-- Recent Candidates -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Candidates</h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var candidate in Model.RecentCandidates)
-                                {
-                                    <tr>
-                                        <td>@candidate.FirstName @candidate.LastName</td>
-                                        <td>@candidate.JobPosition?.Title</td>
-                                        <td><span class="badge bg-secondary">@candidate.Status</span></td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    @if (!Model.RecentCandidates.Any())
-                    {
-                        <p class="text-center">No recent candidates found.</p>
-                    }
-                </div>
+    <!-- Upcoming Interviews -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="m-0">Upcoming Interviews</h6>
+                <a asp-controller="Interviews" asp-action="Index" class="text-sm text-primary">View All</a>
             </div>
-        </div>
-
-        <!-- Upcoming Interviews -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Upcoming Interviews</h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" width="100%" cellspacing="0">
-                            <thead>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0">Time</th>
+                                <th class="border-top-0">Candidate</th>
+                                <th class="border-top-0">Interviewer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var interview in Model.UpcomingInterviews)
+                            {
                                 <tr>
-                                    <th>Time</th>
-                                    <th>Candidate</th>
-                                    <th>Interviewer</th>
+                                    <td class="font-weight-medium">@interview.ScheduledTime.ToString("MMM dd, HH:mm")</td>
+                                    <td>@interview.Candidate?.FirstName @interview.Candidate?.LastName</td>
+                                    <td class="text-muted">@interview.Interviewer?.Name</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var interview in Model.UpcomingInterviews)
-                                {
-                                    <tr>
-                                        <td>@interview.ScheduledTime.ToString("g")</td>
-                                        <td>@interview.Candidate?.FirstName @interview.Candidate?.LastName</td>
-                                        <td>@interview.Interviewer?.Name</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    @if (!Model.UpcomingInterviews.Any())
-                    {
-                        <p class="text-center">No upcoming interviews.</p>
-                    }
+                            }
+                            @if (!Model.UpcomingInterviews.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-muted">No upcoming interviews.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

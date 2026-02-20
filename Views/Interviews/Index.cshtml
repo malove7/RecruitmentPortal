@@ -4,56 +4,64 @@
     ViewData["Title"] = "Manage Interviews";
 }
 
-<h1>Manage Interviews</h1>
+<div class="d-flex justify-content-between align-items-center mb-4 dashboard-header">
+    <div>
+        <h1 class="page-title">Interviews</h1>
+        <p class="page-subtitle">Schedule and manage candidate interviews.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-calendar-plus me-1"></i> Schedule Interview
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Schedule Interview</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ScheduledTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Round)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Candidate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Interviewer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ScheduledTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Round)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Candidate.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Interviewer.Department)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="card shadow mb-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="border-top-0 text-muted small text-uppercase ps-4">Scheduled Time</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Round</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Candidate</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Interviewer</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Notes</th>
+                        <th class="border-top-0 text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in Model) {
+                    <tr>
+                        <td class="ps-4 fw-medium">
+                            <i class="far fa-clock text-muted me-2"></i>@item.ScheduledTime.ToString("MMM dd, yyyy HH:mm")
+                        </td>
+                        <td>
+                            <span class="badge badge-blue">@Html.DisplayFor(modelItem => item.Round)</span>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Candidate.Email)
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-xs bg-soft-info rounded-circle me-2 text-center" style="width:24px;height:24px;line-height:24px;font-size:10px;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                @Html.DisplayFor(modelItem => item.Interviewer.Name)
+                            </div>
+                        </td>
+                         <td class="text-truncate" style="max-width: 200px;" title="@item.Notes">
+                            @Html.DisplayFor(modelItem => item.Notes)
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary border-0 text-muted"><i class="fas fa-edit"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary border-0 text-muted"><i class="fas fa-eye"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger border-0"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

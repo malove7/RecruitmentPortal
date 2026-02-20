@@ -336,3 +336,7 @@ C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\refint\RecruitmentPortal.dll
 C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\RecruitmentPortal.pdb
 C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\RecruitmentPortal.genruntimeconfig.cache
 C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\ref\RecruitmentPortal.dll
+C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\RecruitmentPortal.sourcelink.json
+C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\compressed\f5ngrucz0g-{0}-shiflhx9gn-shiflhx9gn.gz
+C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\compressed\wz26qg7tmg-{0}-w7tktdrf14-w7tktdrf14.gz
+C:\Antigravity\RecruitmentPortal\obj\Debug\net10.0\compressed\6n52ss0awz-{0}-vy3hyt7wr9-vy3hyt7wr9.gz

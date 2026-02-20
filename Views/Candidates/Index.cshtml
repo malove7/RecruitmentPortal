@@ -4,93 +4,110 @@
     ViewData["Title"] = "Manage Candidates";
 }
 
-<h1>Manage Candidates</h1>
+<div class="d-flex justify-content-between align-items-center mb-4 dashboard-header">
+    <div>
+        <h1 class="page-title">Candidates</h1>
+        <p class="page-subtitle">Manage and track candidate applications.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Add Candidate
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Candidate</a>
-</p>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="mb-4">
+            <div class="row align-items-end g-3">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">Search Candidates</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control border-start-0 ps-0" placeholder="Search by name or email..." />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Job Position</label>
+                    <select name="jobPositionId" class="form-select" asp-items="ViewBag.JobPositions">
+                        <option value="">All Positions</option>
+                    </select>
+                </div>
+                <div class="col-md-auto d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a asp-action="Index" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
 
-<form asp-action="Index" method="get" class="mb-3">
-    <div class="form-row align-items-center">
-        <div class="col-auto">
-            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by name or email" />
-        </div>
-        <div class="col-auto">
-             <select name="jobPositionId" class="form-control" asp-items="ViewBag.JobPositions">
-                <option value="">All Positions</option>
-            </select>
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-secondary">Filter</button>
-        </div>
-         <div class="col-auto">
-            <a asp-action="Index" class="btn btn-link">Clear</a>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="border-top-0 text-muted small text-uppercase">Candidate Name</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Contact Info</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Position</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Resume</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Applied Date</th>
+                        <th class="border-top-0 text-muted small text-uppercase">Status</th>
+                        <th class="border-top-0 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-soft-primary text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px; font-weight: 600; background-color: rgba(99, 102, 241, 0.1);">
+                                    @item.FirstName.Substring(0,1)@item.LastName.Substring(0,1)
+                                </div>
+                                <div class="fw-medium">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="small">@Html.DisplayFor(modelItem => item.Email)</div>
+                            <div class="small text-muted">@Html.DisplayFor(modelItem => item.Phone)</div>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.JobPosition.Title)
+                        </td>
+                        <td>
+                            @if(!string.IsNullOrEmpty(item.ResumePath))
+                            {
+                                <a href="#" class="text-primary small"><i class="fas fa-file-pdf me-1"></i> View</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">N/A</span>
+                            }
+                        </td>
+                        <td>
+                            @item.AppliedDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>
+                            @{
+                                var statusClass = item.Status switch
+                                {
+                                    RecruitmentPortal.Models.CandidateStatus.Applied => "badge-blue",
+                                    RecruitmentPortal.Models.CandidateStatus.InReview => "badge-info", // using badge-blue for applied, maybe info for review
+                                    RecruitmentPortal.Models.CandidateStatus.InterviewScheduled => "badge-yellow",
+                                    RecruitmentPortal.Models.CandidateStatus.Offered => "badge-success",
+                                    RecruitmentPortal.Models.CandidateStatus.Hired => "badge-success",
+                                    RecruitmentPortal.Models.CandidateStatus.Rejected => "badge-red",
+                                    _ => "badge-gray"
+                                };
+                            }
+                            <span class="badge @statusClass">@item.Status</span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary border-0 text-muted"><i class="fas fa-edit"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary border-0 text-muted"><i class="fas fa-eye"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger border-0"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
         </div>
     </div>
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ResumePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppliedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.JobPosition)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ResumePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppliedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.JobPosition.Description)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+</div>

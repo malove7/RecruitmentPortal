@@ -4,49 +4,61 @@
     ViewData["Title"] = "Edit Interview";
 }
 
-<h1>Edit Interview</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="page-title mb-0">Edit Interview</h1>
+                <p class="text-muted mb-0">Update interview details.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
 
-<h4>Interview Details</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ScheduledTime" class="control-label"></label>
-                <input asp-for="ScheduledTime" class="form-control" />
-                <span asp-validation-for="ScheduledTime" class="text-danger"></span>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    <input type="hidden" asp-for="Id" />
+                    
+                    <h5 class="mb-4 text-primary">Interview Details</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="CandidateId" class="form-label">Candidate</label>
+                            <select asp-for="CandidateId" class="form-select" asp-items="ViewBag.CandidateId"></select>
+                            <span asp-validation-for="CandidateId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="InterviewerId" class="form-label">Interviewer</label>
+                            <select asp-for="InterviewerId" class="form-select" asp-items="ViewBag.InterviewerId"></select>
+                            <span asp-validation-for="InterviewerId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ScheduledTime" class="form-label">Date & Time</label>
+                            <input asp-for="ScheduledTime" class="form-control" />
+                            <span asp-validation-for="ScheduledTime" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Round" class="form-label">Interview Round</label>
+                            <select asp-for="Round" class="form-select" asp-items="Html.GetEnumSelectList<RecruitmentPortal.Models.InterviewRound>()"></select>
+                            <span asp-validation-for="Round" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Notes" class="form-label">Notes / Instructions</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-light me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Round" class="control-label"></label>
-                <select asp-for="Round" class="form-control" asp-items="Html.GetEnumSelectList<RecruitmentPortal.Models.InterviewRound>()"></select>
-                <span asp-validation-for="Round" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CandidateId" class="control-label"></label>
-                <select asp-for="CandidateId" class="form-control" asp-items="ViewBag.CandidateId"></select>
-                <span asp-validation-for="CandidateId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="InterviewerId" class="control-label"></label>
-                <select asp-for="InterviewerId" class="form-control" asp-items="ViewBag.InterviewerId"></select>
-                <span asp-validation-for="InterviewerId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
