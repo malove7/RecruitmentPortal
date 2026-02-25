@@ -37,10 +37,10 @@ namespace RecruitmentPortal.Models
         public Candidate? Candidate { get; set; }
 
         // Foreign Key to Interviewer
-        public int InterviewerId { get; set; }
+        public string InterviewerId { get; set; } = string.Empty;
         
         [ForeignKey("InterviewerId")]
-        public Interviewer? Interviewer { get; set; }
+        public ApplicationUser? Interviewer { get; set; }
 
         // One-to-One relationship with Feedback
         public Feedback? Feedback { get; set; }

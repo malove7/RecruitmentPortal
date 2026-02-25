@@ -1,0 +1,68 @@
+@model RecruitmentPortal.Models.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i> Back to List
+    </a>
+</div>
+
+<div class="card shadow-sm max-w-2xl mx-auto">
+    <div class="card-header bg-white border-bottom">
+        <h3 class="mb-0">@ViewData["Title"]</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-3">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FirstName" class="form-label control-label">First Name<span class="text-danger">*</span></label>
+                    <input asp-for="FirstName" class="form-control" placeholder="Enter first name" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LastName" class="form-label control-label">Last Name<span class="text-danger">*</span></label>
+                    <input asp-for="LastName" class="form-control" placeholder="Enter last name" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label control-label">Email Address<span class="text-danger">*</span></label>
+                <input asp-for="Email" class="form-control" type="email" placeholder="example@domain.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Role" class="form-label control-label">Role</label>
+                <select asp-for="Role" class="form-select" asp-items="ViewBag.Roles">
+                    <option value="">-- No Role Assigned --</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+                <div class="form-text mt-2">
+                    <ul class="mb-0 ps-3">
+                        <li>Changing a user's role will immediate take effect.</li>
+                        <li><strong>Admin:</strong> Full system access including user management</li>
+                        <li><strong>Interviewer:</strong> Standard access for managing interviews</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="d-grid pt-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Update User
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

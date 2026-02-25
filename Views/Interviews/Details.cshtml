@@ -46,12 +46,12 @@
                         <label class="text-muted text-uppercase small fw-bold mb-1">Interviewer</label>
                          <p class="mb-0 fw-medium">
                              @if(Model.Interviewer != null) {
-                                <text>@Model.Interviewer.Name</text>
+                                <text>@Model.Interviewer.FirstName @Model.Interviewer.LastName</text>
                              } else {
                                  <text>N/A</text>
                              }
                          </p>
-                         <small class="text-muted">@Model.Interviewer?.Department</small>
+                         <small class="text-muted">@Model.Interviewer?.Email</small>
                     </div>
                      <div class="col-12">
                         <label class="text-muted text-uppercase small fw-bold mb-2">Notes & Instructions</label>

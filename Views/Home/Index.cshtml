@@ -128,7 +128,7 @@
                                 <tr>
                                     <td class="font-weight-medium">@interview.ScheduledTime.ToString("MMM dd, HH:mm")</td>
                                     <td>@interview.Candidate?.FirstName @interview.Candidate?.LastName</td>
-                                    <td class="text-muted">@interview.Interviewer?.Name</td>
+                                    <td class="text-muted">@interview.Interviewer?.FirstName @interview.Interviewer?.LastName</td>
                                 </tr>
                             }
                             @if (!Model.UpcomingInterviews.Any())

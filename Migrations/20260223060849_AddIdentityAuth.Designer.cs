@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecruitmentPortal.Data;
 
@@ -11,9 +12,11 @@ using RecruitmentPortal.Data;
 namespace RecruitmentPortal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260223060849_AddIdentityAuth")]
+    partial class AddIdentityAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,9 +375,8 @@ namespace RecruitmentPortal.Migrations
                     b.Property<int>("CandidateId")
                         .HasColumnType("int");
 
-                    b.Property<string>("InterviewerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("InterviewerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -392,6 +394,35 @@ namespace RecruitmentPortal.Migrations
                     b.HasIndex("InterviewerId");
 
                     b.ToTable("Interviews");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.Interviewer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Interviewers");
                 });
 
             modelBuilder.Entity("RecruitmentPortal.Models.JobPosition", b =>
@@ -518,8 +549,8 @@ namespace RecruitmentPortal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RecruitmentPortal.Models.ApplicationUser", "Interviewer")
-                        .WithMany()
+                    b.HasOne("RecruitmentPortal.Models.Interviewer", "Interviewer")
+                        .WithMany("Interviews")
                         .HasForeignKey("InterviewerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -539,6 +570,11 @@ namespace RecruitmentPortal.Migrations
             modelBuilder.Entity("RecruitmentPortal.Models.Interview", b =>
                 {
                     b.Navigation("Feedback");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.Interviewer", b =>
+                {
+                    b.Navigation("Interviews");
                 });
 
             modelBuilder.Entity("RecruitmentPortal.Models.JobPosition", b =>

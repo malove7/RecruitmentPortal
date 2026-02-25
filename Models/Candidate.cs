@@ -17,19 +17,20 @@ namespace RecruitmentPortal.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "First Name is required.")]
         [StringLength(50)]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Last Name is required.")]
         [StringLength(50)]
         public string LastName { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email Address is required.")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address.")]
         public string Email { get; set; }
 
-        [Phone]
+        [Required(ErrorMessage = "Phone Number is required.")]
+        [Phone(ErrorMessage = "Invalid Phone Number.")]
         public string Phone { get; set; }
 
         public string? ResumePath { get; set; }

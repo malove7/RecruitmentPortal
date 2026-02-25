@@ -58,13 +58,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Interviewers" ? "active" : "")" 
-                           asp-area="" asp-controller="Interviewers" asp-action="Index">
-                            <i class="fas fa-user-tie"></i>
-                            <span>Interviewers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Interviews" ? "active" : "")" 
                            asp-area="" asp-controller="Interviews" asp-action="Index">
                             <i class="fas fa-calendar-check"></i>
@@ -78,17 +71,30 @@
                             <span>Feedback</span>
                         </a>
                     </li>
+                    
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item mt-3">
+                            <h6 class="sidebar-heading px-3 text-muted text-uppercase mb-1" style="font-size: 0.75rem;">
+                                <span>Administration</span>
+                            </h6>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" ? "active" : "")" 
+                               asp-area="" asp-controller="Users" asp-action="Index">
+                                <i class="fas fa-users-cog text-primary"></i>
+                                <span>Users</span>
+                            </a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Roles" ? "active" : "")" 
+                               asp-area="" asp-controller="Roles" asp-action="Index">
+                                <i class="fas fa-shield-alt text-warning"></i>
+                                <span>Roles & Permissions</span>
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
             
             <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="user-avatar">AD</div>
-                    <div class="d-flex flex-column">
-                        <span class="font-weight-bold">Admin User</span>
-                        <small class="text-muted" style="font-size: 0.7rem;">admin@portal.com</small>
-                    </div>
-                </div>
+                @await Html.PartialAsync("_LoginPartial")
             </div>
         </nav>
 

@@ -1,0 +1,63 @@
+@model IEnumerable<RecruitmentPortal.Models.ApplicationRole>
+
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Roles Management</h1>
+        <a asp-action="Create" class="btn btn-primary">Create New Role</a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-striped table-hover mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Role Name</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="align-middle">@item.Name</td>
+                            <td class="text-end">
+                                <a asp-controller="Permissions" asp-action="Index" asp-route-roleId="@item.Id" class="btn btn-sm btn-info me-2 text-white">Manage Permissions</a>
+                                
+                                @if (item.Name != RecruitmentPortal.Models.Enums.Roles.Admin.ToString())
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-2">Edit</a>
+                                }
+                                
+                                @if (item.Name != RecruitmentPortal.Models.Enums.Roles.Admin.ToString() && item.Name != RecruitmentPortal.Models.Enums.Roles.Interviewer.ToString())
+                                {
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this role?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

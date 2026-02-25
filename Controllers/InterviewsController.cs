@@ -1,22 +1,27 @@
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RecruitmentPortal.Data;
 using RecruitmentPortal.Models;
 
 namespace RecruitmentPortal.Controllers
 {
+    [Authorize]
     public class InterviewsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public InterviewsController(ApplicationDbContext context)
+        public InterviewsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Interviews
@@ -47,10 +52,11 @@ namespace RecruitmentPortal.Controllers
         }
 
         // GET: Interviews/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var interviewers = await _userManager.GetUsersInRoleAsync("Interviewer");
             ViewData["CandidateId"] = new SelectList(_context.Candidates, "Id", "Email");
-            ViewData["InterviewerId"] = new SelectList(_context.Interviewers, "Id", "Department");
+            ViewData["InterviewerId"] = new SelectList(interviewers, "Id", "Email");
             return View();
         }
 
@@ -67,8 +73,9 @@ namespace RecruitmentPortal.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            var interviewers = await _userManager.GetUsersInRoleAsync("Interviewer");
             ViewData["CandidateId"] = new SelectList(_context.Candidates, "Id", "Email", interview.CandidateId);
-            ViewData["InterviewerId"] = new SelectList(_context.Interviewers, "Id", "Department", interview.InterviewerId);
+            ViewData["InterviewerId"] = new SelectList(interviewers, "Id", "Email", interview.InterviewerId);
             return View(interview);
         }
 
@@ -85,8 +92,9 @@ namespace RecruitmentPortal.Controllers
             {
                 return NotFound();
             }
+            var interviewers = await _userManager.GetUsersInRoleAsync("Interviewer");
             ViewData["CandidateId"] = new SelectList(_context.Candidates, "Id", "Email", interview.CandidateId);
-            ViewData["InterviewerId"] = new SelectList(_context.Interviewers, "Id", "Department", interview.InterviewerId);
+            ViewData["InterviewerId"] = new SelectList(interviewers, "Id", "Email", interview.InterviewerId);
             return View(interview);
         }
 
@@ -133,8 +141,9 @@ namespace RecruitmentPortal.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var interviewers = await _userManager.GetUsersInRoleAsync("Interviewer");
             ViewData["CandidateId"] = new SelectList(_context.Candidates, "Id", "Email", interview.CandidateId);
-            ViewData["InterviewerId"] = new SelectList(_context.Interviewers, "Id", "Department", interview.InterviewerId);
+            ViewData["InterviewerId"] = new SelectList(interviewers, "Id", "Email", interview.InterviewerId);
             return View(interview);
         }
 

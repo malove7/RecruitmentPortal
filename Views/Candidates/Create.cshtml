@@ -24,17 +24,17 @@
                     <h5 class="mb-4 text-primary">Personal Information</h5>
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label asp-for="FirstName" class="form-label">First Name</label>
+                            <label asp-for="FirstName" class="form-label">First Name <span class="text-danger">*</span></label>
                             <input asp-for="FirstName" class="form-control" placeholder="e.g. John" />
                             <span asp-validation-for="FirstName" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="LastName" class="form-label">Last Name</label>
+                            <label asp-for="LastName" class="form-label">Last Name <span class="text-danger">*</span></label>
                             <input asp-for="LastName" class="form-control" placeholder="e.g. Doe" />
                             <span asp-validation-for="LastName" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <label asp-for="Email" class="form-label">Email Address <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light text-muted"><i class="fas fa-envelope"></i></span>
                                 <input asp-for="Email" class="form-control" placeholder="john.doe@example.com" />
@@ -42,7 +42,7 @@
                             <span asp-validation-for="Email" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <label asp-for="Phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light text-muted"><i class="fas fa-phone"></i></span>
                                 <input asp-for="Phone" class="form-control" placeholder="(555) 123-4567" />

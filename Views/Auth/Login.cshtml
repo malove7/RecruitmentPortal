@@ -1,0 +1,253 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spacestem Recruit - Login</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            background-color: #fff;
+        }
+
+        .split-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Left Side: Branded Identity */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, #4A4AFB 0%, #2929B5 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative Abstract Lines */
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .brand-section::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            right: -20%;
+            width: 80%;
+            height: 80%;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .brand-logo {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            line-height: 1;
+        }
+
+        .brand-heading {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            z-index: 10;
+        }
+
+        .brand-subtext {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 80%;
+            line-height: 1.6;
+            z-index: 10;
+        }
+
+        /* Right Side: Login Form */
+        .form-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+            background-color: #ffffff;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+
+        .login-heading {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .login-subtext {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        .login-subtext a {
+            color: #1a1a1a;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Minimalist Input Styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border: none;
+            border-bottom: 2px solid #e0e0e0;
+            border-radius: 0;
+            padding: 0.75rem 0;
+            font-size: 1rem;
+            color: #1a1a1a;
+            background-color: transparent;
+        }
+        
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #1a1a1a;
+            background-color: transparent;
+        }
+
+        .form-control::placeholder {
+            color: #adb5bd;
+            font-weight: 400;
+        }
+
+        /* Buttons */
+        .btn-custom {
+            width: 100%;
+            padding: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-custom {
+            background-color: #1a1a1a;
+            color: white;
+            border: 1px solid #1a1a1a;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #333;
+            color: white;
+        }
+
+
+
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .split-layout {
+                flex-direction: column;
+            }
+            .brand-section {
+                padding: 3rem 2rem;
+                flex: none;
+            }
+            .brand-heading {
+                font-size: 2.5rem;
+            }
+            .form-section {
+                padding: 3rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="split-layout">
+        
+        <!-- Left Banner Area -->
+        <div class="brand-section">
+            <div class="brand-logo">*</div>
+            <div class="brand-heading">
+                Hello<br />
+                Spacestem Recruit! 👋
+            </div>
+            <div class="brand-subtext">
+                Say goodbye to repetitive and manual recruitment tasks in Excel. Boost your productivity with Spacestem Recruit and save valuable time!
+            </div>
+        </div>
+
+        <!-- Right Form Area -->
+        <div class="form-section">
+            <div class="form-container">
+                <div class="app-title">Spacestem Recruit</div>
+                
+                <h1 class="login-heading">Welcome Back!</h1>
+                <p class="login-subtext">
+                    Please enter your credentials to login.
+                </p>
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required value="admin@recruitmentportal.com" />
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required value="Admin@123!" />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-custom btn-primary-custom">
+                        Login Now
+                    </button>
+                </form>
+
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+</html>

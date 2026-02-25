@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using RecruitmentPortal.Models;
 
 namespace RecruitmentPortal.Controllers
 {
+    [Authorize(Policy = "Permissions.ViewCandidates")]
     public class CandidatesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -62,6 +64,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         // GET: Candidates/Create
+        [Authorize(Policy = "Permissions.CreateCandidates")]
         public IActionResult Create()
         {
             ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Description");
@@ -73,6 +76,7 @@ namespace RecruitmentPortal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Permissions.CreateCandidates")]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Phone,JobPositionId,CurrentLocation,NoticePeriod,Experience,ReasonForChange,CurrentCTC,ExpectedCTC,HighestEducation,DOB,NewNote")] Candidate candidate, IFormFile? resumeFile)
         {
             if (ModelState.IsValid)
@@ -121,6 +125,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         // GET: Candidates/Edit/5
+        [Authorize(Policy = "Permissions.EditCandidates")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -144,6 +149,7 @@ namespace RecruitmentPortal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Permissions.EditCandidates")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Phone,JobPositionId,CurrentLocation,NoticePeriod,Experience,ReasonForChange,CurrentCTC,ExpectedCTC,HighestEducation,DOB,NewNote")] Candidate candidate)
         {
             if (id != candidate.Id)
@@ -209,6 +215,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         // GET: Candidates/Delete/5
+        [Authorize(Policy = "Permissions.DeleteCandidates")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -230,6 +237,7 @@ namespace RecruitmentPortal.Controllers
         // POST: Candidates/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Permissions.DeleteCandidates")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var candidate = await _context.Candidates.FindAsync(id);

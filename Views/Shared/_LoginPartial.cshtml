@@ -1,0 +1,35 @@
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    var firstName = User.FindFirst("FirstName")?.Value ?? "User";
+    var lastName = User.FindFirst("LastName")?.Value ?? "";
+    var initial = firstName.Length > 0 ? firstName.Substring(0, 1).ToUpper() : "U";
+    var email = User.FindFirst(ClaimTypes.Email)?.Value ?? User.Identity.Name;
+
+    <div class="user-profile d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex align-items-center">
+            <div class="user-avatar mr-2 rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" style="width: 32px; height: 32px; font-weight: bold;">
+                @initial
+            </div>
+            <div class="d-flex flex-column ml-2">
+                <span class="font-weight-bold text-dark" style="font-size: 0.9rem;">@firstName @lastName</span>
+                <small class="text-muted" style="font-size: 0.7rem;">@email</small>
+            </div>
+        </div>
+        <form asp-controller="Auth" asp-action="Logout" method="post" class="ml-auto m-0 p-0">
+            <button type="submit" class="btn btn-sm btn-link text-danger" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="user-profile text-center w-100">
+        <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-sm w-100">
+            <i class="fas fa-sign-in-alt mt-1"></i> Login
+        </a>
+    </div>
+}

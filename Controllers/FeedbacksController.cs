@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using RecruitmentPortal.Models;
 
 namespace RecruitmentPortal.Controllers
 {
+    [Authorize]
     public class FeedbacksController : Controller
     {
         private readonly ApplicationDbContext _context;

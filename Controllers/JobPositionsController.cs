@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using RecruitmentPortal.Models;
 
 namespace RecruitmentPortal.Controllers
 {
+    [Authorize(Policy = "Permissions.ViewJobPositions")]
     public class JobPositionsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -44,6 +46,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         // GET: JobPositions/Create
+        [Authorize(Policy = "Permissions.CreateJobPositions")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +57,7 @@ namespace RecruitmentPortal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Permissions.CreateJobPositions")]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Requirements,IsActive")] JobPosition jobPosition)
         {
             if (ModelState.IsValid)
@@ -66,6 +70,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         // GET: JobPositions/Edit/5
+        [Authorize(Policy = "Permissions.EditJobPositions")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +91,7 @@ namespace RecruitmentPortal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Permissions.EditJobPositions")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Requirements,IsActive")] JobPosition jobPosition)
         {
             if (id != jobPosition.Id)
@@ -127,6 +133,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         // GET: JobPositions/Delete/5
+        [Authorize(Policy = "Permissions.DeleteJobPositions")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,6 +154,7 @@ namespace RecruitmentPortal.Controllers
         // POST: JobPositions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Permissions.DeleteJobPositions")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var jobPosition = await _context.JobPositions.FindAsync(id);

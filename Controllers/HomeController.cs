@@ -5,8 +5,11 @@ using RecruitmentPortal.Data;
 using RecruitmentPortal.Models;
 using RecruitmentPortal.Models.ViewModels;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace RecruitmentPortal.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
