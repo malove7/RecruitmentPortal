@@ -54,5 +54,27 @@ namespace RecruitmentPortal.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError(string.Empty, "Email is required.");
+                return View();
+            }
+
+            var result = await _authService.ForgotPasswordAsync(email);
+
+            // We always show a generic success message to prevent email enumeration attacks
+            ViewBag.Message = "If your email is registered, you will receive a password reset link shortly.";
+            return View();
+        }
     }
 }
