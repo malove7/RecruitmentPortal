@@ -47,6 +47,12 @@ namespace RecruitmentPortal.Models.ViewModels
         [Display(Name = "Residence Address")]
         public string? ResidenceAddress { get; set; }
 
+        [Display(Name = "Married")]
+        public bool? Married { get; set; }
+
+        [Display(Name = "Child")]
+        public bool? Child { get; set; }
+
         [Display(Name = "Name of Current Organization")]
         public string? CurrentOrganization { get; set; }
 

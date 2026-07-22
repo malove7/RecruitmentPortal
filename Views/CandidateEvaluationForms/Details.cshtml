@@ -40,6 +40,8 @@
         @{ InfoRow("Contact Number", Model.ContactNumber); }
         @{ InfoRow("Date of Birth", Model.DateOfBirth?.ToString("dd MMM yyyy")); }
         @{ InfoRow("Residence Address", Model.ResidenceAddress); }
+        @{ InfoRow("Married", Model.Married.HasValue ? (Model.Married.Value ? "Yes" : "No") : null); }
+        @{ InfoRow("Child", Model.Child.HasValue ? (Model.Child.Value ? "Yes" : "No") : null); }
         @{ InfoRow("Position Applied For", Model.PositionAppliedFor); }
         @{ InfoRow("Interview Date", Model.InterviewDate?.ToString("dd MMM yyyy")); }
         @{ InfoRow("Interview Time", Model.InterviewTime); }

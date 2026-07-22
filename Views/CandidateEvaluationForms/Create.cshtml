@@ -76,6 +76,32 @@
                 <input asp-for="ExpectedCTC" class="form-control" placeholder="e.g. 6 LPA" />
             </div>
             <div class="col-md-6">
+                <label asp-for="Married" class="form-label">Married</label>
+                <div class="d-flex gap-4 mt-1">
+                    <div class="form-check">
+                        <input asp-for="Married" class="form-check-input" type="radio" id="marriedYes" value="true" />
+                        <label class="form-check-label" for="marriedYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="Married" class="form-check-input" type="radio" id="marriedNo" value="false" />
+                        <label class="form-check-label" for="marriedNo">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Child" class="form-label">Child</label>
+                <div class="d-flex gap-4 mt-1">
+                    <div class="form-check">
+                        <input asp-for="Child" class="form-check-input" type="radio" id="childYes" value="true" />
+                        <label class="form-check-label" for="childYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="Child" class="form-check-input" type="radio" id="childNo" value="false" />
+                        <label class="form-check-label" for="childNo">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
                 <label asp-for="PreviouslyInterviewed" class="form-label">Have you ever been interviewed by Spacestem?</label>
                 <div class="d-flex gap-4 mt-1">
                     <div class="form-check">

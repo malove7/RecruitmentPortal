@@ -52,6 +52,10 @@ namespace RecruitmentPortal.Models
         [StringLength(500)]
         public string? ResidenceAddress { get; set; }
 
+        public bool? Married { get; set; }
+
+        public bool? Child { get; set; }
+
         [StringLength(150)]
         public string? CurrentOrganization { get; set; }
 

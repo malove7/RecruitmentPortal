@@ -160,6 +160,8 @@ namespace RecruitmentPortal.Controllers
             form.DateOfBirth = model.DateOfBirth;
             form.ContactNumber = model.ContactNumber;
             form.ResidenceAddress = model.ResidenceAddress;
+            form.Married = model.Married;
+            form.Child = model.Child;
             form.CurrentOrganization = model.CurrentOrganization;
             form.ExpectedCTC = model.ExpectedCTC;
             form.OfferedCTC = model.OfferedCTC;
@@ -260,6 +262,8 @@ namespace RecruitmentPortal.Controllers
                 DateOfBirth = model.DateOfBirth,
                 ContactNumber = model.ContactNumber,
                 ResidenceAddress = model.ResidenceAddress,
+                Married = model.Married,
+                Child = model.Child,
                 CurrentOrganization = model.CurrentOrganization,
                 ExpectedCTC = model.ExpectedCTC,
                 NoticePeriod = model.NoticePeriod,
@@ -324,6 +328,8 @@ namespace RecruitmentPortal.Controllers
                 DateOfBirth = form.DateOfBirth,
                 ContactNumber = form.ContactNumber,
                 ResidenceAddress = form.ResidenceAddress,
+                Married = form.Married,
+                Child = form.Child,
                 CurrentOrganization = form.CurrentOrganization,
                 ExpectedCTC = form.ExpectedCTC,
                 OfferedCTC = form.OfferedCTC,
