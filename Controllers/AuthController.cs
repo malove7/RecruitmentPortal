@@ -19,7 +19,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password, bool rememberMe = false)
         {
             var token = await _authService.LoginAsync(email, password);
 
@@ -32,9 +32,9 @@ namespace RecruitmentPortal.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // Ensure this is fine for local dev (requires HTTPS)
+                Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(12) 
+                Expires = rememberMe ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddHours(12)
             };
 
             Response.Cookies.Append("jwtToken", token, cookieOptions);

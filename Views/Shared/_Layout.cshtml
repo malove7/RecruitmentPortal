@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="~/RecruitmentPortal.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="d-flex" style="min-height: 100vh;">
+    <div class="d-flex" style="height: 100vh; overflow: hidden;">
         <!-- Sidebar Navigation -->
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -65,10 +65,17 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Feedbacks" ? "active" : "")" 
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Feedbacks" ? "active" : "")"
                            asp-area="" asp-controller="Feedbacks" asp-action="Index">
                             <i class="fas fa-comment-dots"></i>
                             <span>Feedback</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "CandidateEvaluationForms" ? "active" : "")"
+                           asp-area="" asp-controller="CandidateEvaluationForms" asp-action="Index">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>Evaluation Forms</span>
                         </a>
                     </li>
                     

@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Form Submitted";
+    Layout = "_PublicLayout";
+}
+
+<div class="form-header-card">
+    <div class="form-brand">SPACESTEM</div>
+    <h1>Candidate Information &amp; Evaluation Form</h1>
+</div>
+
+<div class="section-card text-center py-5" style="border-radius:0 0 12px 12px;">
+    <div style="font-size:4rem;color:#4a6cf7;margin-bottom:1rem;">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h2 class="fw-700 mb-2">Form Submitted Successfully</h2>
+    <p class="text-muted mb-4">Thank you for completing the Candidate Information &amp; Evaluation Form.<br>Our HR team will review your submission and get in touch with you shortly.</p>
+    <a href="@Url.Action("Create", "CandidateEvaluationForms")" class="btn btn-submit">
+        <i class="fas fa-plus me-2"></i>Submit Another Response
+    </a>
+</div>

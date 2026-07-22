@@ -39,6 +39,50 @@ namespace RecruitmentPortal.Data
                 }
             }
 
+            // Assign permissions to HR role
+            var hrRole = await roleManager.FindByNameAsync(Roles.HR.ToString());
+            if (hrRole != null)
+            {
+                var hrExisting = await roleManager.GetClaimsAsync(hrRole);
+                var hrPermissions = new[]
+                {
+                    Permissions.ViewDashboard,
+                    Permissions.ViewCandidates, Permissions.CreateCandidates, Permissions.EditCandidates,
+                    Permissions.ViewJobPositions,
+                    Permissions.ViewInterviews, Permissions.CreateInterviews, Permissions.EditInterviews,
+                    Permissions.ViewFeedbacks, Permissions.CreateFeedbacks, Permissions.EditFeedbacks,
+                    Permissions.ViewEvaluationForms, Permissions.EditEvaluationForms, Permissions.DeleteEvaluationForms
+                };
+                foreach (var p in hrPermissions)
+                {
+                    var claim = new Claim("Permission", p.ToString());
+                    if (!hrExisting.Any(c => c.Type == "Permission" && c.Value == p.ToString()))
+                        await roleManager.AddClaimAsync(hrRole, claim);
+                }
+            }
+
+            // Assign permissions to Interviewer role
+            var interviewerRole = await roleManager.FindByNameAsync(Roles.Interviewer.ToString());
+            if (interviewerRole != null)
+            {
+                var intExisting = await roleManager.GetClaimsAsync(interviewerRole);
+                var interviewerPermissions = new[]
+                {
+                    Permissions.ViewDashboard,
+                    Permissions.ViewCandidates,
+                    Permissions.ViewJobPositions,
+                    Permissions.ViewInterviews,
+                    Permissions.ViewFeedbacks,
+                    Permissions.ViewEvaluationForms
+                };
+                foreach (var p in interviewerPermissions)
+                {
+                    var claim = new Claim("Permission", p.ToString());
+                    if (!intExisting.Any(c => c.Type == "Permission" && c.Value == p.ToString()))
+                        await roleManager.AddClaimAsync(interviewerRole, claim);
+                }
+            }
+
             // 3. Seed Default Admin User
             string adminEmail = "admin@recruitmentportal.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);

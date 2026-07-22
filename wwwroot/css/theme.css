@@ -234,9 +234,15 @@ label {
 .shadow-sm { box-shadow: var(--shadow-sm) !important; }
 
 /* Main Content Area Adjustment */
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 .main-content {
     flex: 1;
+    min-height: 0;
     padding: var(--space-8);
     background-color: var(--bg-body);
-    min-height: 100vh;
+    overflow-y: auto;
 }
