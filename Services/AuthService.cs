@@ -30,5 +30,20 @@ namespace RecruitmentPortal.Services
 
             return await _jwtTokenGenerator.GenerateTokenAsync(user);
         }
+
+        public async Task<bool> ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return false;
+            }
+
+            // In a real application, you would generate a password reset token here and email it.
+            // var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            // await _emailService.SendEmailAsync(email, "Reset Password", $"Your reset code is {token}");
+
+            return true;
+        }
     }
 }

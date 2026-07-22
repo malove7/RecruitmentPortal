@@ -1,0 +1,6 @@
+{
+  "files": ["Views/Shared/_Layout.cshtml"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

@@ -19,7 +19,7 @@ namespace RecruitmentPortal.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password, bool rememberMe = false)
         {
             var token = await _authService.LoginAsync(email, password);
 
@@ -32,9 +32,9 @@ namespace RecruitmentPortal.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // Ensure this is fine for local dev (requires HTTPS)
+                Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(12) 
+                Expires = rememberMe ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddHours(12)
             };
 
             Response.Cookies.Append("jwtToken", token, cookieOptions);
@@ -52,6 +52,28 @@ namespace RecruitmentPortal.Controllers
         [HttpGet]
         public IActionResult AccessDenied()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError(string.Empty, "Email is required.");
+                return View();
+            }
+
+            var result = await _authService.ForgotPasswordAsync(email);
+
+            // We always show a generic success message to prevent email enumeration attacks
+            ViewBag.Message = "If your email is registered, you will receive a password reset link shortly.";
             return View();
         }
     }

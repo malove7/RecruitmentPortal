@@ -1,0 +1,171 @@
+@model RecruitmentPortal.Models.CandidateEvaluationForm
+@{
+    ViewData["Title"] = "Evaluation Form — " + Model.FullName;
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="page-title">@Model.FullName</h1>
+        <p class="page-subtitle text-muted">Submitted @Model.SubmittedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (User.HasClaim("Permission", "EditEvaluationForms"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="fas fa-pen me-1"></i>Edit
+            </a>
+        }
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to List
+        </a>
+    </div>
+</div>
+
+@{
+    void InfoRow(string label, string? value)
+    {
+        <div class="row mb-2">
+            <div class="col-sm-4 text-muted fw-medium">@label</div>
+            <div class="col-sm-8">@(string.IsNullOrWhiteSpace(value) ? "—" : value)</div>
+        </div>
+    }
+}
+
+<!-- Personal Information -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header fw-semibold"><i class="fas fa-user me-2 text-primary"></i>Personal Information</div>
+    <div class="card-body">
+        @{ InfoRow("Full Name", Model.FullName); }
+        @{ InfoRow("Email", Model.Email); }
+        @{ InfoRow("Contact Number", Model.ContactNumber); }
+        @{ InfoRow("Date of Birth", Model.DateOfBirth?.ToString("dd MMM yyyy")); }
+        @{ InfoRow("Residence Address", Model.ResidenceAddress); }
+        @{ InfoRow("Married", Model.Married.HasValue ? (Model.Married.Value ? "Yes" : "No") : null); }
+        @{ InfoRow("Child", Model.Child.HasValue ? (Model.Child.Value ? "Yes" : "No") : null); }
+        @{ InfoRow("Position Applied For", Model.PositionAppliedFor); }
+        @{ InfoRow("Interview Date", Model.InterviewDate?.ToString("dd MMM yyyy")); }
+        @{ InfoRow("Interview Time", Model.InterviewTime); }
+        @{ InfoRow("Total Experience", Model.TotalExperience); }
+        @{ InfoRow("Relevant Industry Experience", Model.RelevantIndustryExperience); }
+        @{ InfoRow("Current Organization", Model.CurrentOrganization); }
+        @{ InfoRow("Expected CTC", Model.ExpectedCTC); }
+        @{ InfoRow("Offered CTC", Model.OfferedCTC); }
+        @{ InfoRow("Joining Date", Model.JoiningDate?.ToString("dd MMM yyyy")); }
+        @{ InfoRow("Notice Period", Model.NoticePeriod); }
+        @{ InfoRow("Previously Interviewed by Spacestem", Model.PreviouslyInterviewed.HasValue ? (Model.PreviouslyInterviewed.Value ? "Yes" : "No") : null); }
+    </div>
+</div>
+
+<!-- Work Experience -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header fw-semibold"><i class="fas fa-briefcase me-2 text-primary"></i>Work Experience</div>
+    <div class="card-body">
+        @if (!Model.WorkExperiences.Any())
+        {
+            <span class="text-muted">No work experience records.</span>
+        }
+        else
+        {
+            @foreach (var we in Model.WorkExperiences.OrderBy(w => w.RecordNumber))
+            {
+                <div class="border rounded p-3 mb-2 bg-light">
+                    <div class="fw-semibold mb-2 text-primary small text-uppercase">Record @we.RecordNumber</div>
+                    @{ InfoRow("Company", we.CompanyName); }
+                    @{ InfoRow("Designation", we.Designation); }
+                    @{ InfoRow("Start Date", we.StartDate?.ToString("dd MMM yyyy")); }
+                    @{ InfoRow("End Date", we.EndDate?.ToString("dd MMM yyyy")); }
+                    @{ InfoRow("Duration", we.DurationOfWork); }
+                    @{ InfoRow("Last CTC Per Annum", we.LastCTCPerAnnum); }
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Education -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header fw-semibold"><i class="fas fa-graduation-cap me-2 text-primary"></i>Education</div>
+    <div class="card-body">
+        @if (!Model.EducationRecords.Any())
+        {
+            <span class="text-muted">No education records.</span>
+        }
+        else
+        {
+            @foreach (var edu in Model.EducationRecords.OrderBy(e => e.RecordNumber))
+            {
+                <div class="border rounded p-3 mb-2 bg-light">
+                    <div class="fw-semibold mb-2 text-primary small text-uppercase">Record @edu.RecordNumber</div>
+                    @{ InfoRow("Degree / Course", edu.DegreeCourse); }
+                    @{ InfoRow("Year of Passing", edu.YearOfPassing); }
+                    @{ InfoRow("Division / Percentage", edu.DivisionPercentage); }
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Declaration -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header fw-semibold"><i class="fas fa-file-signature me-2 text-primary"></i>Declaration</div>
+    <div class="card-body">
+        @{ InfoRow("Declaration Accepted", Model.Declaration ? "Yes" : "No"); }
+        @{ InfoRow("Digital Signature", Model.DigitalSignature); }
+    </div>
+</div>
+
+<!-- HR Evaluation -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header fw-semibold"><i class="fas fa-user-tie me-2 text-primary"></i>HR Evaluation</div>
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-sm-4 text-muted fw-medium">Communication Skills</div>
+            <div class="col-sm-8">
+                @if (Model.CommunicationSkills.HasValue)
+                {
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="progress flex-grow-1" style="height:8px;max-width:200px;">
+                            <div class="progress-bar bg-primary" style="width:@(Model.CommunicationSkills * 10)%"></div>
+                        </div>
+                        <span class="fw-semibold">@Model.CommunicationSkills / 10</span>
+                    </div>
+                }
+                else { <span>—</span> }
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 text-muted fw-medium">Confidence</div>
+            <div class="col-sm-8">
+                @if (Model.Confidence.HasValue)
+                {
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="progress flex-grow-1" style="height:8px;max-width:200px;">
+                            <div class="progress-bar bg-success" style="width:@(Model.Confidence * 10)%"></div>
+                        </div>
+                        <span class="fw-semibold">@Model.Confidence / 10</span>
+                    </div>
+                }
+                else { <span>—</span> }
+            </div>
+        </div>
+        @{ InfoRow("HR Comments", Model.HRComments); }
+        @{ InfoRow("HR Signature", Model.HRSignature); }
+    </div>
+</div>
+
+<!-- Technical Evaluation -->
+<div class="card shadow-sm mb-3">
+    <div class="card-header fw-semibold"><i class="fas fa-laptop-code me-2 text-primary"></i>Technical Evaluation</div>
+    <div class="card-body">
+        @{ InfoRow("Technical Comments", Model.TechnicalComments); }
+        @{ InfoRow("Technical Reviewer Signature", Model.TechnicalReviewerSignature); }
+    </div>
+</div>
+
+<!-- Other -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold"><i class="fas fa-comment-alt me-2 text-primary"></i>Other Comments</div>
+    <div class="card-body">
+        @{ InfoRow("Comments", Model.OtherComments); }
+    </div>
+</div>
