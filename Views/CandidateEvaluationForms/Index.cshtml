@@ -3,6 +3,8 @@
     ViewData["Title"] = "Evaluation Forms";
 }
 
+@Html.AntiForgeryToken()
+
 <div class="page-header d-flex justify-content-between align-items-center">
     <div>
         <h1 class="page-title">Evaluation Forms</h1>
@@ -82,7 +84,15 @@
                                     <span class="badge @statusClass">@form.EvaluationStatus</span>
                                 </td>
                                 <td class="text-muted small">@form.SubmittedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</td>
-                                <td class="text-end">
+                                <td class="text-end text-nowrap">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-primary me-1 btn-generate-feedback-link"
+                                            data-form-id="@form.Id"
+                                            data-candidate-name="@form.FullName"
+                                            data-candidate-position="@form.PositionAppliedFor"
+                                            title="Generate Feedback Link">
+                                        <i class="fas fa-link"></i>
+                                    </button>
                                     <a asp-action="Details" asp-route-id="@form.Id" class="btn btn-sm btn-outline-primary me-1" title="View">
                                         <i class="fas fa-eye"></i>
                                     </a>
@@ -107,3 +117,185 @@
         }
     </div>
 </div>
+
+<!-- Generate Feedback Link Modal -->
+<div class="modal fade" id="generateFeedbackLinkModal" tabindex="-1" aria-labelledby="generateFeedbackLinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title fw-semibold" id="generateFeedbackLinkModalLabel">
+                        <i class="fas fa-link me-2 text-primary"></i>Generate Feedback Link
+                    </h5>
+                    <div class="small text-muted" id="modalCandidateMeta"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modalTargetFormId" />
+
+                <div class="mb-3">
+                    <label for="feedbackTypeDropdown" class="form-label fw-medium">Feedback Type <span class="text-muted small fw-normal">(Optional)</span></label>
+                    <select id="feedbackTypeDropdown" class="form-select">
+                        <option value="">-- Select Feedback Type (Optional) --</option>
+                        <option value="Technical">Technical Feedback</option>
+                        <option value="Practical">Practical Feedback</option>
+                    </select>
+                    <div class="form-text text-muted">
+                        If no type is selected, the interviewer will choose either Technical Feedback or Practical Feedback when opening the link.
+                    </div>
+                </div>
+
+                <div class="d-grid mb-3">
+                    <button type="button" id="btnGenerateLinkAction" class="btn btn-primary">
+                        <i class="fas fa-link me-1"></i>Generate Link
+                    </button>
+                </div>
+
+                <div id="modalResultArea" style="display: none;">
+                    <label for="generatedUrlField" class="form-label fw-medium">Generated URL</label>
+                    <div class="input-group">
+                        <input type="text" id="generatedUrlField" class="form-control font-monospace small bg-light" readonly />
+                        <button type="button" id="btnCopyFeedbackLink" class="btn btn-outline-primary">
+                            <i class="fas fa-copy me-1"></i>Copy Link
+                        </button>
+                    </div>
+                    <div id="copyFeedbackSuccessMsg" class="alert alert-success d-flex align-items-center py-2 px-3 mt-2 d-none" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>Link copied to clipboard.</span>
+                    </div>
+                </div>
+
+                <div id="modalErrorArea" class="alert alert-danger py-2 px-3 mt-2 d-none" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="modalErrorText">Failed to generate link.</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalElement = document.getElementById('generateFeedbackLinkModal');
+            if (!modalElement) return;
+
+            const modal = new bootstrap.Modal(modalElement);
+            const formIdInput = document.getElementById('modalTargetFormId');
+            const candidateMeta = document.getElementById('modalCandidateMeta');
+            const feedbackTypeSelect = document.getElementById('feedbackTypeDropdown');
+            const btnGenerate = document.getElementById('btnGenerateLinkAction');
+            const resultArea = document.getElementById('modalResultArea');
+            const urlField = document.getElementById('generatedUrlField');
+            const btnCopy = document.getElementById('btnCopyFeedbackLink');
+            const copyMsg = document.getElementById('copyFeedbackSuccessMsg');
+            const errorArea = document.getElementById('modalErrorArea');
+            const errorText = document.getElementById('modalErrorText');
+
+            // Open modal when any "Generate Link" button is clicked
+            document.querySelectorAll('.btn-generate-feedback-link').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = this.getAttribute('data-form-id');
+                    const name = this.getAttribute('data-candidate-name') || '';
+                    const position = this.getAttribute('data-candidate-position') || '';
+
+                    formIdInput.value = id;
+                    candidateMeta.textContent = name + (position ? ' — ' + position : '');
+                    feedbackTypeSelect.value = '';
+                    resultArea.style.display = 'none';
+                    urlField.value = '';
+                    copyMsg.classList.add('d-none');
+                    errorArea.classList.add('d-none');
+                    btnGenerate.disabled = false;
+                    btnGenerate.innerHTML = '<i class="fas fa-link me-1"></i>Generate Link';
+
+                    modal.show();
+                });
+            });
+
+            // Generate Link button clicked inside modal
+            btnGenerate.addEventListener('click', async function () {
+                const formId = parseInt(formIdInput.value);
+                const feedbackType = feedbackTypeSelect.value;
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                const antiForgeryToken = tokenInput ? tokenInput.value : '';
+
+                btnGenerate.disabled = true;
+                btnGenerate.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Generating...';
+                errorArea.classList.add('d-none');
+                copyMsg.classList.add('d-none');
+
+                try {
+                    const response = await fetch('@Url.Action("GenerateFeedbackLink", "CandidateEvaluationForms")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': antiForgeryToken
+                        },
+                        body: JSON.stringify({
+                            formId: formId,
+                            feedbackType: feedbackType || null
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        urlField.value = data.url;
+                        resultArea.style.display = 'block';
+                    } else {
+                        errorText.textContent = data.message || 'Failed to generate feedback link. Please try again.';
+                        errorArea.classList.remove('d-none');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    errorText.textContent = 'A network error occurred. Please try again.';
+                    errorArea.classList.remove('d-none');
+                } finally {
+                    btnGenerate.disabled = false;
+                    btnGenerate.innerHTML = '<i class="fas fa-link me-1"></i>Generate Link';
+                }
+            });
+
+            // Copy Link button clicked
+            btnCopy.addEventListener('click', function () {
+                const textToCopy = urlField.value;
+                if (!textToCopy) return;
+
+                const showCopied = () => {
+                    copyMsg.classList.remove('d-none');
+                    setTimeout(() => {
+                        copyMsg.classList.add('d-none');
+                    }, 4000);
+                };
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(textToCopy).then(showCopied).catch(() => fallbackCopy(textToCopy, showCopied));
+                } else {
+                    fallbackCopy(textToCopy, showCopied);
+                }
+            });
+
+            function fallbackCopy(text, callback) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-999999px';
+                textarea.style.top = '-999999px';
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    callback();
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+                textarea.remove();
+            }
+        });
+    </script>
+}

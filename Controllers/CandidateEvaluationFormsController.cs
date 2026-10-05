@@ -76,7 +76,233 @@ namespace RecruitmentPortal.Controllers
             return View();
         }
 
-        // ── Authenticated: list / view / edit / delete ───────────────────────
+        // ── Public: Interviewer feedback link & submission ───────────────────
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Feedback(string? token)
+        {
+            var model = new InterviewerFeedbackViewModel();
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "The feedback link is invalid or missing.";
+                return View(model);
+            }
+
+            var tokenEntity = await _context.CandidateFeedbackTokens
+                .Include(t => t.CandidateEvaluationForm)
+                .FirstOrDefaultAsync(t => t.Token == token);
+
+            if (tokenEntity == null)
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "The feedback link is invalid or has expired.";
+                return View(model);
+            }
+
+            if (tokenEntity.IsUsed)
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "This feedback link is no longer available because feedback has already been submitted.";
+                return View(model);
+            }
+
+            if (tokenEntity.CandidateEvaluationForm == null)
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "The candidate evaluation record associated with this link could not be found.";
+                return View(model);
+            }
+
+            var form = tokenEntity.CandidateEvaluationForm;
+            model.Token = token;
+            model.FormId = form.Id;
+            model.CandidateFullName = form.FullName;
+            model.CandidateEmail = form.Email;
+            model.PositionAppliedFor = form.PositionAppliedFor;
+            model.SelectedFeedbackType = tokenEntity.FeedbackType;
+            model.IsTypePreSelected = !string.IsNullOrWhiteSpace(tokenEntity.FeedbackType);
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Feedback(InterviewerFeedbackViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Token))
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "The feedback link is invalid or missing.";
+                return View(model);
+            }
+
+            var tokenEntity = await _context.CandidateFeedbackTokens
+                .Include(t => t.CandidateEvaluationForm)
+                .FirstOrDefaultAsync(t => t.Token == model.Token);
+
+            if (tokenEntity == null)
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "The feedback link is invalid or has expired.";
+                return View(model);
+            }
+
+            if (tokenEntity.IsUsed)
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "This feedback link is no longer available because feedback has already been submitted.";
+                return View(model);
+            }
+
+            if (tokenEntity.CandidateEvaluationForm == null)
+            {
+                model.IsValid = false;
+                model.ErrorMessage = "The candidate evaluation record associated with this link could not be found.";
+                return View(model);
+            }
+
+            var form = tokenEntity.CandidateEvaluationForm;
+            model.CandidateFullName = form.FullName;
+            model.CandidateEmail = form.Email;
+            model.PositionAppliedFor = form.PositionAppliedFor;
+            model.FormId = form.Id;
+            model.IsTypePreSelected = !string.IsNullOrWhiteSpace(tokenEntity.FeedbackType);
+
+            if (model.IsTypePreSelected)
+            {
+                model.SelectedFeedbackType = tokenEntity.FeedbackType;
+            }
+
+            if (string.IsNullOrWhiteSpace(model.SelectedFeedbackType) ||
+                (model.SelectedFeedbackType != "Technical" && model.SelectedFeedbackType != "Practical"))
+            {
+                ModelState.AddModelError(nameof(model.SelectedFeedbackType), "Please select a feedback type (Technical or Practical).");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.ReviewerSignature))
+            {
+                ModelState.AddModelError(nameof(model.ReviewerSignature), "Interviewer name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Comments))
+            {
+                ModelState.AddModelError(nameof(model.Comments), "Feedback comments are required.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (model.SelectedFeedbackType == "Technical")
+            {
+                form.TechnicalComments = model.Comments.Trim();
+                form.TechnicalReviewerSignature = model.ReviewerSignature.Trim();
+            }
+            else // Practical
+            {
+                var signature = model.ReviewerSignature.Trim();
+                var comments = model.Comments.Trim();
+                var formatted = $"Reviewer: {signature}\nComments: {comments}";
+                if (formatted.Length > 1000)
+                {
+                    formatted = formatted.Substring(0, 1000);
+                }
+                form.OtherComments = formatted;
+            }
+
+            tokenEntity.FeedbackType ??= model.SelectedFeedbackType;
+            tokenEntity.IsUsed = true;
+            tokenEntity.UsedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(FeedbackSuccess), new { token = model.Token });
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> FeedbackSuccess(string? token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return RedirectToAction(nameof(Create));
+            }
+
+            var tokenEntity = await _context.CandidateFeedbackTokens
+                .Include(t => t.CandidateEvaluationForm)
+                .FirstOrDefaultAsync(t => t.Token == token);
+
+            if (tokenEntity == null || tokenEntity.CandidateEvaluationForm == null)
+            {
+                return RedirectToAction(nameof(Create));
+            }
+
+            var model = new FeedbackSuccessViewModel
+            {
+                CandidateFullName = tokenEntity.CandidateEvaluationForm.FullName,
+                PositionAppliedFor = tokenEntity.CandidateEvaluationForm.PositionAppliedFor,
+                FeedbackType = tokenEntity.FeedbackType ?? "Candidate",
+                SubmittedAt = tokenEntity.UsedAt ?? DateTime.UtcNow
+            };
+
+            return View(model);
+        }
+
+        // ── Authenticated: list / view / edit / delete / generate link ────────
+
+        [Authorize(Policy = "Permissions.ViewEvaluationForms")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateFeedbackLink([FromBody] GenerateFeedbackLinkRequest request)
+        {
+            if (request == null || request.FormId <= 0)
+            {
+                return BadRequest(new { success = false, message = "Invalid candidate evaluation form ID." });
+            }
+
+            var form = await _context.CandidateEvaluationForms.FindAsync(request.FormId);
+            if (form == null)
+            {
+                return NotFound(new { success = false, message = "Candidate evaluation form not found." });
+            }
+
+            string? feedbackType = null;
+            if (!string.IsNullOrWhiteSpace(request.FeedbackType))
+            {
+                var trimmed = request.FeedbackType.Trim();
+                if (string.Equals(trimmed, "Technical", StringComparison.OrdinalIgnoreCase))
+                {
+                    feedbackType = "Technical";
+                }
+                else if (string.Equals(trimmed, "Practical", StringComparison.OrdinalIgnoreCase))
+                {
+                    feedbackType = "Practical";
+                }
+            }
+
+            var token = Guid.NewGuid().ToString("N");
+            var feedbackToken = new CandidateFeedbackToken
+            {
+                CandidateEvaluationFormId = form.Id,
+                Token = token,
+                FeedbackType = feedbackType,
+                CreatedAt = DateTime.UtcNow,
+                IsUsed = false
+            };
+
+            _context.CandidateFeedbackTokens.Add(feedbackToken);
+            await _context.SaveChangesAsync();
+
+            var scheme = Request?.Scheme ?? "https";
+            var url = Url?.Action(nameof(Feedback), "CandidateEvaluationForms", new { token }, scheme)
+                      ?? $"/CandidateEvaluationForms/Feedback?token={token}";
+            return Ok(new { success = true, url });
+        }
 
         [Authorize(Policy = "Permissions.ViewEvaluationForms")]
         public async Task<IActionResult> Index(string? search, EvaluationStatus? status)

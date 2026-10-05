@@ -19,6 +19,7 @@ namespace RecruitmentPortal.Data
         public DbSet<CandidateEvaluationForm> CandidateEvaluationForms { get; set; }
         public DbSet<WorkExperienceRecord> WorkExperienceRecords { get; set; }
         public DbSet<EducationRecord> EducationRecords { get; set; }
+        public DbSet<CandidateFeedbackToken> CandidateFeedbackTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +34,10 @@ namespace RecruitmentPortal.Data
                 .HasIndex(f => f.SubmissionToken)
                 .IsUnique()
                 .HasFilter("[SubmissionToken] IS NOT NULL");
+
+            modelBuilder.Entity<CandidateFeedbackToken>()
+                .HasIndex(t => t.Token)
+                .IsUnique();
         }
     }
 }

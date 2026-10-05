@@ -104,6 +104,7 @@ namespace RecruitmentPortal.Models
 
         public ICollection<WorkExperienceRecord> WorkExperiences { get; set; } = new List<WorkExperienceRecord>();
         public ICollection<EducationRecord> EducationRecords { get; set; } = new List<EducationRecord>();
+        public ICollection<CandidateFeedbackToken> FeedbackTokens { get; set; } = new List<CandidateFeedbackToken>();
     }
 
     public class WorkExperienceRecord
