@@ -200,6 +200,38 @@ namespace RecruitmentPortal.Controllers
 
             if (model.SelectedFeedbackType == "Technical")
             {
+                var existingRecords = await _context.TechnicalEvaluationRecords
+                    .Where(t => t.CandidateEvaluationFormId == form.Id)
+                    .ToListAsync();
+
+                int nextRecordNumber = 1;
+                if (!existingRecords.Any() && (!string.IsNullOrWhiteSpace(form.TechnicalComments) || !string.IsNullOrWhiteSpace(form.TechnicalReviewerSignature)))
+                {
+                    _context.TechnicalEvaluationRecords.Add(new TechnicalEvaluationRecord
+                    {
+                        CandidateEvaluationFormId = form.Id,
+                        RecordNumber = 1,
+                        TechnicalReviewerSignature = form.TechnicalReviewerSignature,
+                        TechnicalComments = form.TechnicalComments,
+                        EvaluatedAt = form.SubmittedAt
+                    });
+                    nextRecordNumber = 2;
+                }
+                else if (existingRecords.Any())
+                {
+                    nextRecordNumber = existingRecords.Max(t => t.RecordNumber) + 1;
+                }
+
+                var techRecord = new TechnicalEvaluationRecord
+                {
+                    CandidateEvaluationFormId = form.Id,
+                    RecordNumber = nextRecordNumber,
+                    TechnicalReviewerSignature = model.ReviewerSignature.Trim(),
+                    TechnicalComments = model.Comments.Trim(),
+                    EvaluatedAt = DateTime.UtcNow
+                };
+                _context.TechnicalEvaluationRecords.Add(techRecord);
+
                 form.TechnicalComments = model.Comments.Trim();
                 form.TechnicalReviewerSignature = model.ReviewerSignature.Trim();
             }
@@ -335,6 +367,7 @@ namespace RecruitmentPortal.Controllers
             var form = await _context.CandidateEvaluationForms
                 .Include(f => f.WorkExperiences)
                 .Include(f => f.EducationRecords)
+                .Include(f => f.TechnicalEvaluations)
                 .FirstOrDefaultAsync(f => f.Id == id);
 
             if (form == null) return NotFound();
@@ -351,6 +384,7 @@ namespace RecruitmentPortal.Controllers
             var form = await _context.CandidateEvaluationForms
                 .Include(f => f.WorkExperiences)
                 .Include(f => f.EducationRecords)
+                .Include(f => f.TechnicalEvaluations)
                 .FirstOrDefaultAsync(f => f.Id == id);
 
             if (form == null) return NotFound();
@@ -371,6 +405,7 @@ namespace RecruitmentPortal.Controllers
             var form = await _context.CandidateEvaluationForms
                 .Include(f => f.WorkExperiences)
                 .Include(f => f.EducationRecords)
+                .Include(f => f.TechnicalEvaluations)
                 .FirstOrDefaultAsync(f => f.Id == id);
 
             if (form == null) return NotFound();
@@ -408,6 +443,7 @@ namespace RecruitmentPortal.Controllers
             // Replace child records
             _context.WorkExperienceRecords.RemoveRange(form.WorkExperiences);
             _context.EducationRecords.RemoveRange(form.EducationRecords);
+            _context.TechnicalEvaluationRecords.RemoveRange(form.TechnicalEvaluations);
 
             foreach (var we in model.WorkExperiences)
             {
@@ -438,6 +474,28 @@ namespace RecruitmentPortal.Controllers
                         DivisionPercentage = edu.DivisionPercentage
                     });
                 }
+            }
+
+            int techRecordNum = 1;
+            foreach (var te in model.TechnicalEvaluations)
+            {
+                if (!string.IsNullOrWhiteSpace(te.TechnicalComments) || !string.IsNullOrWhiteSpace(te.TechnicalReviewerSignature))
+                {
+                    form.TechnicalEvaluations.Add(new TechnicalEvaluationRecord
+                    {
+                        RecordNumber = techRecordNum++,
+                        TechnicalReviewerSignature = te.TechnicalReviewerSignature?.Trim(),
+                        TechnicalComments = te.TechnicalComments?.Trim(),
+                        EvaluatedAt = te.EvaluatedAt ?? DateTime.UtcNow
+                    });
+                }
+            }
+
+            var latestTech = form.TechnicalEvaluations.OrderByDescending(t => t.RecordNumber).FirstOrDefault();
+            if (latestTech != null)
+            {
+                form.TechnicalComments = latestTech.TechnicalComments;
+                form.TechnicalReviewerSignature = latestTech.TechnicalReviewerSignature;
             }
 
             await _context.SaveChangesAsync();
@@ -536,6 +594,21 @@ namespace RecruitmentPortal.Controllers
                 }
             }
 
+            int techRecordNum = 1;
+            foreach (var te in model.TechnicalEvaluations)
+            {
+                if (!string.IsNullOrWhiteSpace(te.TechnicalComments) || !string.IsNullOrWhiteSpace(te.TechnicalReviewerSignature))
+                {
+                    form.TechnicalEvaluations.Add(new TechnicalEvaluationRecord
+                    {
+                        RecordNumber = techRecordNum++,
+                        TechnicalReviewerSignature = te.TechnicalReviewerSignature?.Trim(),
+                        TechnicalComments = te.TechnicalComments?.Trim(),
+                        EvaluatedAt = te.EvaluatedAt ?? DateTime.UtcNow
+                    });
+                }
+            }
+
             return form;
         }
 
@@ -618,6 +691,30 @@ namespace RecruitmentPortal.Controllers
                         DivisionPercentage = edu.DivisionPercentage
                     };
                 }
+            }
+
+            if (form.TechnicalEvaluations != null && form.TechnicalEvaluations.Any())
+            {
+                vm.TechnicalEvaluations = form.TechnicalEvaluations
+                    .OrderBy(t => t.RecordNumber)
+                    .Select(t => new TechnicalEvaluationEntry
+                    {
+                        Id = t.Id,
+                        RecordNumber = t.RecordNumber,
+                        TechnicalReviewerSignature = t.TechnicalReviewerSignature,
+                        TechnicalComments = t.TechnicalComments,
+                        EvaluatedAt = t.EvaluatedAt
+                    }).ToList();
+            }
+            else if (!string.IsNullOrWhiteSpace(form.TechnicalComments) || !string.IsNullOrWhiteSpace(form.TechnicalReviewerSignature))
+            {
+                vm.TechnicalEvaluations.Add(new TechnicalEvaluationEntry
+                {
+                    RecordNumber = 1,
+                    TechnicalComments = form.TechnicalComments,
+                    TechnicalReviewerSignature = form.TechnicalReviewerSignature,
+                    EvaluatedAt = form.SubmittedAt
+                });
             }
 
             return vm;

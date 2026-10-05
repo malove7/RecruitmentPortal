@@ -120,6 +120,8 @@ namespace RecruitmentPortal.Models.ViewModels
         [Display(Name = "Technical Reviewer Signature")]
         public string? TechnicalReviewerSignature { get; set; }
 
+        public List<TechnicalEvaluationEntry> TechnicalEvaluations { get; set; } = new List<TechnicalEvaluationEntry>();
+
         // Other
         [Display(Name = "Other Comments")]
         public string? OtherComments { get; set; }
@@ -144,5 +146,20 @@ namespace RecruitmentPortal.Models.ViewModels
         public string? DegreeCourse { get; set; }
         public string? YearOfPassing { get; set; }
         public string? DivisionPercentage { get; set; }
+    }
+
+    public class TechnicalEvaluationEntry
+    {
+        public int Id { get; set; }
+        public int RecordNumber { get; set; }
+
+        [Display(Name = "Technical Reviewer Signature")]
+        public string? TechnicalReviewerSignature { get; set; }
+
+        [Display(Name = "Technical Comments")]
+        public string? TechnicalComments { get; set; }
+
+        [Display(Name = "Evaluation Date")]
+        public DateTime? EvaluatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -603,6 +603,219 @@ public class CandidateEvaluationFormsControllerTests
         model.FeedbackType.Should().Be("Practical");
     }
 
+    [Fact]
+    public async Task FeedbackPost_ShouldSupportMultipleInterviewerSubmissions_CreatingDistinctRecords()
+    {
+        using var context = CreateContext();
+        var form = new CandidateEvaluationForm
+        {
+            Email = "candidate@example.com",
+            FullName = "Multi Interviewee",
+            PositionAppliedFor = "Full Stack Engineer"
+        };
+        context.CandidateEvaluationForms.Add(form);
+        await context.SaveChangesAsync();
+
+        // 1st Interviewer submits
+        var token1 = "token-interviewer-1";
+        context.CandidateFeedbackTokens.Add(new CandidateFeedbackToken
+        {
+            CandidateEvaluationFormId = form.Id,
+            Token = token1,
+            FeedbackType = "Technical"
+        });
+        await context.SaveChangesAsync();
+
+        var controller = new CandidateEvaluationFormsController(context);
+        var feedback1 = new InterviewerFeedbackViewModel
+        {
+            Token = token1,
+            FormId = form.Id,
+            SelectedFeedbackType = "Technical",
+            ReviewerSignature = "Alice Lead",
+            Comments = "Excellent problem solving and algorithm analysis."
+        };
+        var result1 = await controller.Feedback(feedback1);
+        result1.Should().BeOfType<RedirectToActionResult>();
+
+        // 2nd Interviewer submits
+        var token2 = "token-interviewer-2";
+        context.CandidateFeedbackTokens.Add(new CandidateFeedbackToken
+        {
+            CandidateEvaluationFormId = form.Id,
+            Token = token2,
+            FeedbackType = "Technical"
+        });
+        await context.SaveChangesAsync();
+
+        var feedback2 = new InterviewerFeedbackViewModel
+        {
+            Token = token2,
+            FormId = form.Id,
+            SelectedFeedbackType = "Technical",
+            ReviewerSignature = "Bob Architect",
+            Comments = "Great understanding of distributed systems and clean architecture."
+        };
+        var result2 = await controller.Feedback(feedback2);
+        result2.Should().BeOfType<RedirectToActionResult>();
+
+        // Assert
+        var techRecords = await context.TechnicalEvaluationRecords
+            .Where(t => t.CandidateEvaluationFormId == form.Id)
+            .OrderBy(t => t.RecordNumber)
+            .ToListAsync();
+
+        techRecords.Should().HaveCount(2);
+
+        techRecords[0].RecordNumber.Should().Be(1);
+        techRecords[0].TechnicalReviewerSignature.Should().Be("Alice Lead");
+        techRecords[0].TechnicalComments.Should().Be("Excellent problem solving and algorithm analysis.");
+
+        techRecords[1].RecordNumber.Should().Be(2);
+        techRecords[1].TechnicalReviewerSignature.Should().Be("Bob Architect");
+        techRecords[1].TechnicalComments.Should().Be("Great understanding of distributed systems and clean architecture.");
+
+        var updatedForm = await context.CandidateEvaluationForms.FindAsync(form.Id);
+        updatedForm!.TechnicalReviewerSignature.Should().Be("Bob Architect");
+        updatedForm.TechnicalComments.Should().Be("Great understanding of distributed systems and clean architecture.");
+    }
+
+    [Fact]
+    public async Task FeedbackPost_ShouldMigrateLegacyFeedbackToRecord1_WhenAddingSecondFeedback()
+    {
+        using var context = CreateContext();
+        var form = new CandidateEvaluationForm
+        {
+            Email = "legacy@example.com",
+            FullName = "Legacy Candidate",
+            PositionAppliedFor = "Backend Developer",
+            TechnicalReviewerSignature = "Original Reviewer",
+            TechnicalComments = "Initial evaluation comments"
+        };
+        context.CandidateEvaluationForms.Add(form);
+        await context.SaveChangesAsync();
+
+        var token = "token-second-interviewer";
+        context.CandidateFeedbackTokens.Add(new CandidateFeedbackToken
+        {
+            CandidateEvaluationFormId = form.Id,
+            Token = token,
+            FeedbackType = "Technical"
+        });
+        await context.SaveChangesAsync();
+
+        var controller = new CandidateEvaluationFormsController(context);
+        var feedback = new InterviewerFeedbackViewModel
+        {
+            Token = token,
+            FormId = form.Id,
+            SelectedFeedbackType = "Technical",
+            ReviewerSignature = "Second Reviewer",
+            Comments = "Second round interview comments"
+        };
+
+        var result = await controller.Feedback(feedback);
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var techRecords = await context.TechnicalEvaluationRecords
+            .Where(t => t.CandidateEvaluationFormId == form.Id)
+            .OrderBy(t => t.RecordNumber)
+            .ToListAsync();
+
+        techRecords.Should().HaveCount(2);
+        techRecords[0].RecordNumber.Should().Be(1);
+        techRecords[0].TechnicalReviewerSignature.Should().Be("Original Reviewer");
+        techRecords[0].TechnicalComments.Should().Be("Initial evaluation comments");
+
+        techRecords[1].RecordNumber.Should().Be(2);
+        techRecords[1].TechnicalReviewerSignature.Should().Be("Second Reviewer");
+        techRecords[1].TechnicalComments.Should().Be("Second round interview comments");
+    }
+
+    [Fact]
+    public async Task EditPost_ShouldSaveMultipleTechnicalEvaluations_AndSyncLatestFeedback()
+    {
+        using var context = CreateContext();
+        var form = new CandidateEvaluationForm
+        {
+            Email = "edit@example.com",
+            FullName = "Editable Candidate",
+            PositionAppliedFor = "Full Stack Engineer"
+        };
+        context.CandidateEvaluationForms.Add(form);
+        await context.SaveChangesAsync();
+
+        var controller = new CandidateEvaluationFormsController(context);
+        var model = BuildValidModel(Guid.NewGuid());
+        model.Id = form.Id;
+        model.TechnicalEvaluations = new List<TechnicalEvaluationEntry>
+        {
+            new TechnicalEvaluationEntry
+            {
+                RecordNumber = 1,
+                TechnicalReviewerSignature = "Interviewer One",
+                TechnicalComments = "Feedback One"
+            },
+            new TechnicalEvaluationEntry
+            {
+                RecordNumber = 2,
+                TechnicalReviewerSignature = "Interviewer Two",
+                TechnicalComments = "Feedback Two"
+            }
+        };
+
+        var result = await controller.Edit(form.Id, model);
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var records = await context.TechnicalEvaluationRecords
+            .Where(t => t.CandidateEvaluationFormId == form.Id)
+            .OrderBy(t => t.RecordNumber)
+            .ToListAsync();
+
+        records.Should().HaveCount(2);
+        records[0].TechnicalReviewerSignature.Should().Be("Interviewer One");
+        records[0].TechnicalComments.Should().Be("Feedback One");
+        records[1].TechnicalReviewerSignature.Should().Be("Interviewer Two");
+        records[1].TechnicalComments.Should().Be("Feedback Two");
+
+        var updatedForm = await context.CandidateEvaluationForms.FindAsync(form.Id);
+        updatedForm!.TechnicalReviewerSignature.Should().Be("Interviewer Two");
+        updatedForm.TechnicalComments.Should().Be("Feedback Two");
+    }
+
+    [Fact]
+    public async Task DetailsGet_ShouldIncludeAllTechnicalEvaluations()
+    {
+        using var context = CreateContext();
+        var form = new CandidateEvaluationForm
+        {
+            Email = "details@example.com",
+            FullName = "Details Candidate",
+            PositionAppliedFor = "QA Lead"
+        };
+        form.TechnicalEvaluations.Add(new TechnicalEvaluationRecord
+        {
+            RecordNumber = 1,
+            TechnicalReviewerSignature = "Interviewer A",
+            TechnicalComments = "Feedback A"
+        });
+        form.TechnicalEvaluations.Add(new TechnicalEvaluationRecord
+        {
+            RecordNumber = 2,
+            TechnicalReviewerSignature = "Interviewer B",
+            TechnicalComments = "Feedback B"
+        });
+        context.CandidateEvaluationForms.Add(form);
+        await context.SaveChangesAsync();
+
+        var controller = new CandidateEvaluationFormsController(context);
+        var result = await controller.Details(form.Id);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        var model = viewResult.Model.Should().BeOfType<CandidateEvaluationForm>().Subject;
+        model.TechnicalEvaluations.Should().HaveCount(2);
+    }
+
     private static CandidateEvaluationFormViewModel BuildValidModel(Guid token) => new()
     {
         SubmissionToken = token,

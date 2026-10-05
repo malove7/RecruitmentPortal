@@ -252,19 +252,56 @@
         </div>
     </div>
 
-    <!-- Technical Evaluation -->
+    <!-- Technical Evaluations -->
     <div class="card shadow-sm mb-3">
-        <div class="card-header fw-semibold"><i class="fas fa-laptop-code me-2 text-primary"></i>Technical Evaluation</div>
+        <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-laptop-code me-2 text-primary"></i>Technical Evaluations
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddTechnicalEvaluation">
+                <i class="fas fa-plus me-1"></i>Add Interviewer Feedback
+            </button>
+        </div>
         <div class="card-body">
-            <div class="row g-3">
-                <div class="col-12">
-                    <label asp-for="TechnicalComments" class="form-label">Technical Comments</label>
-                    <textarea asp-for="TechnicalComments" class="form-control" rows="3"></textarea>
-                </div>
-                <div class="col-md-6">
-                    <label asp-for="TechnicalReviewerSignature" class="form-label">Technical Reviewer Signature</label>
-                    <input asp-for="TechnicalReviewerSignature" class="form-control" />
-                </div>
+            <div id="technicalEvaluationsContainer">
+                @for (int i = 0; i < Model.TechnicalEvaluations.Count; i++)
+                {
+                    <div class="border rounded p-3 mb-3 bg-light tech-eval-card" data-index="@i">
+                        <input type="hidden" name="TechnicalEvaluations.Index" value="@i" />
+                        <input type="hidden" name="TechnicalEvaluations[@i].Id" value="@Model.TechnicalEvaluations[i].Id" />
+                        <input type="hidden" name="TechnicalEvaluations[@i].RecordNumber" class="tech-record-number" value="@(i + 1)" />
+                        <input type="hidden" name="TechnicalEvaluations[@i].EvaluatedAt" value="@(Model.TechnicalEvaluations[i].EvaluatedAt?.ToString("o"))" />
+
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <div class="fw-semibold text-primary small text-uppercase tech-eval-title">
+                                Interviewer Feedback #@(i + 1)
+                                @if (Model.TechnicalEvaluations[i].EvaluatedAt is DateTime evaluatedAt)
+                                {
+                                    <span class="text-muted text-lowercase fw-normal ms-2 tech-eval-time">
+                                        (@evaluatedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm"))
+                                    </span>
+                                }
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-remove-tech-eval" title="Remove feedback">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Interviewer Name / Signature</label>
+                                <input name="TechnicalEvaluations[@i].TechnicalReviewerSignature" value="@Model.TechnicalEvaluations[i].TechnicalReviewerSignature" class="form-control" placeholder="e.g. John Doe" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Technical Comments</label>
+                                <textarea name="TechnicalEvaluations[@i].TechnicalComments" class="form-control" rows="3" placeholder="Enter technical feedback...">@Model.TechnicalEvaluations[i].TechnicalComments</textarea>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div id="noTechEvalsAlert" class="text-muted small @(Model.TechnicalEvaluations.Any() ? "d-none" : "")">
+                <i class="fas fa-info-circle me-1"></i>No interviewer feedback recorded yet. Click <strong>"Add Interviewer Feedback"</strong> to add an evaluation manually or share a feedback link with interviewers.
             </div>
         </div>
     </div>
@@ -287,4 +324,118 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('technicalEvaluationsContainer');
+            const btnAdd = document.getElementById('btnAddTechnicalEvaluation');
+            const noAlert = document.getElementById('noTechEvalsAlert');
+
+            function updateCardIndices() {
+                const cards = container.querySelectorAll('.tech-eval-card');
+                if (cards.length === 0) {
+                    if (noAlert) noAlert.classList.remove('d-none');
+                } else {
+                    if (noAlert) noAlert.classList.add('d-none');
+                }
+
+                cards.forEach((card, index) => {
+                    card.setAttribute('data-index', index);
+
+                    const titleSpan = card.querySelector('.tech-eval-title');
+                    const timeSpan = card.querySelector('.tech-eval-time');
+                    const timeHtml = timeSpan ? timeSpan.outerHTML : '';
+                    if (titleSpan) {
+                        titleSpan.innerHTML = `Interviewer Feedback #${index + 1} ${timeHtml}`;
+                    }
+
+                    const recordNumInput = card.querySelector('.tech-record-number');
+                    if (recordNumInput) {
+                        recordNumInput.value = index + 1;
+                        recordNumInput.setAttribute('name', `TechnicalEvaluations[${index}].RecordNumber`);
+                    }
+
+                    const indexInput = card.querySelector('input[name="TechnicalEvaluations.Index"]');
+                    if (indexInput) {
+                        indexInput.value = index;
+                    }
+
+                    const idInput = card.querySelector('input[name$=".Id"]');
+                    if (idInput) {
+                        idInput.setAttribute('name', `TechnicalEvaluations[${index}].Id`);
+                    }
+
+                    const evaluatedAtInput = card.querySelector('input[name$=".EvaluatedAt"]');
+                    if (evaluatedAtInput) {
+                        evaluatedAtInput.setAttribute('name', `TechnicalEvaluations[${index}].EvaluatedAt`);
+                    }
+
+                    const sigInput = card.querySelector('input[name$=".TechnicalReviewerSignature"]');
+                    if (sigInput) {
+                        sigInput.setAttribute('name', `TechnicalEvaluations[${index}].TechnicalReviewerSignature`);
+                    }
+
+                    const commentsInput = card.querySelector('textarea[name$=".TechnicalComments"]');
+                    if (commentsInput) {
+                        commentsInput.setAttribute('name', `TechnicalEvaluations[${index}].TechnicalComments`);
+                    }
+                });
+            }
+
+            if (btnAdd) {
+                btnAdd.addEventListener('click', function () {
+                    const cards = container.querySelectorAll('.tech-eval-card');
+                    const nextIndex = cards.length;
+                    const nextNum = nextIndex + 1;
+
+                    const newCard = document.createElement('div');
+                    newCard.className = 'border rounded p-3 mb-3 bg-light tech-eval-card';
+                    newCard.setAttribute('data-index', nextIndex);
+                    newCard.innerHTML = `
+                        <input type="hidden" name="TechnicalEvaluations.Index" value="${nextIndex}" />
+                        <input type="hidden" name="TechnicalEvaluations[${nextIndex}].Id" value="0" />
+                        <input type="hidden" name="TechnicalEvaluations[${nextIndex}].RecordNumber" class="tech-record-number" value="${nextNum}" />
+                        <input type="hidden" name="TechnicalEvaluations[${nextIndex}].EvaluatedAt" value="${new Date().toISOString()}" />
+
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <div class="fw-semibold text-primary small text-uppercase tech-eval-title">
+                                Interviewer Feedback #${nextNum}
+                                <span class="text-muted text-lowercase fw-normal ms-2 tech-eval-time">
+                                    (Just now)
+                                </span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-remove-tech-eval" title="Remove feedback">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Interviewer Name / Signature</label>
+                                <input name="TechnicalEvaluations[${nextIndex}].TechnicalReviewerSignature" class="form-control" placeholder="e.g. John Doe" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Technical Comments</label>
+                                <textarea name="TechnicalEvaluations[${nextIndex}].TechnicalComments" class="form-control" rows="3" placeholder="Enter technical feedback..."></textarea>
+                            </div>
+                        </div>
+                    `;
+
+                    container.appendChild(newCard);
+                    updateCardIndices();
+                });
+            }
+
+            if (container) {
+                container.addEventListener('click', function (e) {
+                    const removeBtn = e.target.closest('.btn-remove-tech-eval');
+                    if (removeBtn) {
+                        const card = removeBtn.closest('.tech-eval-card');
+                        if (card) {
+                            card.remove();
+                            updateCardIndices();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 }

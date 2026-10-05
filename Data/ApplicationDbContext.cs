@@ -20,6 +20,7 @@ namespace RecruitmentPortal.Data
         public DbSet<WorkExperienceRecord> WorkExperienceRecords { get; set; }
         public DbSet<EducationRecord> EducationRecords { get; set; }
         public DbSet<CandidateFeedbackToken> CandidateFeedbackTokens { get; set; }
+        public DbSet<TechnicalEvaluationRecord> TechnicalEvaluationRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +39,12 @@ namespace RecruitmentPortal.Data
             modelBuilder.Entity<CandidateFeedbackToken>()
                 .HasIndex(t => t.Token)
                 .IsUnique();
+
+            modelBuilder.Entity<TechnicalEvaluationRecord>()
+                .HasOne(t => t.CandidateEvaluationForm)
+                .WithMany(f => f.TechnicalEvaluations)
+                .HasForeignKey(t => t.CandidateEvaluationFormId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

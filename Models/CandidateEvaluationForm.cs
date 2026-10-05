@@ -105,6 +105,7 @@ namespace RecruitmentPortal.Models
         public ICollection<WorkExperienceRecord> WorkExperiences { get; set; } = new List<WorkExperienceRecord>();
         public ICollection<EducationRecord> EducationRecords { get; set; } = new List<EducationRecord>();
         public ICollection<CandidateFeedbackToken> FeedbackTokens { get; set; } = new List<CandidateFeedbackToken>();
+        public ICollection<TechnicalEvaluationRecord> TechnicalEvaluations { get; set; } = new List<TechnicalEvaluationRecord>();
     }
 
     public class WorkExperienceRecord
@@ -147,5 +148,22 @@ namespace RecruitmentPortal.Models
 
         [StringLength(50)]
         public string? DivisionPercentage { get; set; }
+    }
+
+    public class TechnicalEvaluationRecord
+    {
+        public int Id { get; set; }
+        public int CandidateEvaluationFormId { get; set; }
+        public CandidateEvaluationForm? CandidateEvaluationForm { get; set; }
+
+        public int RecordNumber { get; set; }
+
+        [StringLength(150)]
+        public string? TechnicalReviewerSignature { get; set; }
+
+        [StringLength(1000)]
+        public string? TechnicalComments { get; set; }
+
+        public DateTime? EvaluatedAt { get; set; } = DateTime.UtcNow;
     }
 }

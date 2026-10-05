@@ -155,10 +155,64 @@
 
 <!-- Technical Evaluation -->
 <div class="card shadow-sm mb-3">
-    <div class="card-header fw-semibold"><i class="fas fa-laptop-code me-2 text-primary"></i>Technical Evaluation</div>
+    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-laptop-code me-2 text-primary"></i>Technical Evaluations
+            @if (Model.TechnicalEvaluations != null && Model.TechnicalEvaluations.Any())
+            {
+                <span class="badge bg-primary ms-2">@Model.TechnicalEvaluations.Count</span>
+            }
+        </div>
+    </div>
     <div class="card-body">
-        @{ InfoRow("Technical Comments", Model.TechnicalComments); }
-        @{ InfoRow("Technical Reviewer Signature", Model.TechnicalReviewerSignature); }
+        @if (Model.TechnicalEvaluations != null && Model.TechnicalEvaluations.Any())
+        {
+            var orderedEvaluations = Model.TechnicalEvaluations.OrderBy(t => t.RecordNumber).ToList();
+            <div class="d-flex flex-column gap-3">
+                @for (int i = 0; i < orderedEvaluations.Count; i++)
+                {
+                    var eval = orderedEvaluations[i];
+                    <div class="border rounded p-3 bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="fw-semibold text-primary">
+                                <i class="fas fa-user-check me-1"></i>Interviewer Evaluation #@(eval.RecordNumber > 0 ? eval.RecordNumber : (i + 1))
+                            </span>
+                            @if (eval.EvaluatedAt is DateTime evalAt)
+                            {
+                                <span class="text-muted small">
+                                    <i class="far fa-clock me-1"></i>@evalAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")
+                                </span>
+                            }
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 text-muted fw-medium">Interviewer Name / Signature</div>
+                            <div class="col-sm-8 fw-semibold">@(string.IsNullOrWhiteSpace(eval.TechnicalReviewerSignature) ? "—" : eval.TechnicalReviewerSignature)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-muted fw-medium">Technical Comments</div>
+                            <div class="col-sm-8" style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(eval.TechnicalComments) ? "—" : eval.TechnicalComments)</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(Model.TechnicalComments) || !string.IsNullOrWhiteSpace(Model.TechnicalReviewerSignature))
+        {
+            <div class="border rounded p-3 bg-light">
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted fw-medium">Interviewer Name / Signature</div>
+                    <div class="col-sm-8 fw-semibold">@(string.IsNullOrWhiteSpace(Model.TechnicalReviewerSignature) ? "—" : Model.TechnicalReviewerSignature)</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-muted fw-medium">Technical Comments</div>
+                    <div class="col-sm-8" style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.TechnicalComments) ? "—" : Model.TechnicalComments)</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-0">No technical evaluations recorded yet.</p>
+        }
     </div>
 </div>
 
