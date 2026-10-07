@@ -21,6 +21,13 @@ namespace RecruitmentPortal.Data
         public DbSet<EducationRecord> EducationRecords { get; set; }
         public DbSet<CandidateFeedbackToken> CandidateFeedbackTokens { get; set; }
         public DbSet<TechnicalEvaluationRecord> TechnicalEvaluationRecords { get; set; }
+        public DbSet<AIResumeScreening> AIResumeScreenings { get; set; }
+        public DbSet<AIResumeSkillEvaluation> AIResumeSkillEvaluations { get; set; }
+        public DbSet<AIResumeStrength> AIResumeStrengths { get; set; }
+        public DbSet<AIResumeEvidence> AIResumeEvidences { get; set; }
+        public DbSet<AIResumeConcern> AIResumeConcerns { get; set; }
+        public DbSet<AIResumeGap> AIResumeGaps { get; set; }
+        public DbSet<AIResumeFollowUpQuestion> AIResumeFollowUpQuestions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +51,49 @@ namespace RecruitmentPortal.Data
                 .HasOne(t => t.CandidateEvaluationForm)
                 .WithMany(f => f.TechnicalEvaluations)
                 .HasForeignKey(t => t.CandidateEvaluationFormId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // AI Resume Screening relationships
+            modelBuilder.Entity<AIResumeScreening>()
+                .HasOne(s => s.JobPosition)
+                .WithMany()
+                .HasForeignKey(s => s.JobPositionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AIResumeSkillEvaluation>()
+                .HasOne(e => e.AIResumeScreening)
+                .WithMany(s => s.Skills)
+                .HasForeignKey(e => e.AIResumeScreeningId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AIResumeStrength>()
+                .HasOne(e => e.AIResumeScreening)
+                .WithMany(s => s.Strengths)
+                .HasForeignKey(e => e.AIResumeScreeningId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AIResumeEvidence>()
+                .HasOne(e => e.AIResumeScreening)
+                .WithMany(s => s.EvidenceExtracted)
+                .HasForeignKey(e => e.AIResumeScreeningId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AIResumeConcern>()
+                .HasOne(e => e.AIResumeScreening)
+                .WithMany(s => s.Concerns)
+                .HasForeignKey(e => e.AIResumeScreeningId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AIResumeGap>()
+                .HasOne(e => e.AIResumeScreening)
+                .WithMany(s => s.Gaps)
+                .HasForeignKey(e => e.AIResumeScreeningId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AIResumeFollowUpQuestion>()
+                .HasOne(e => e.AIResumeScreening)
+                .WithMany(s => s.FollowUpQuestions)
+                .HasForeignKey(e => e.AIResumeScreeningId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

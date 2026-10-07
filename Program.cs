@@ -76,6 +76,12 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+// AI Resume Screening Services & Configuration
+builder.Services.Configure<RecruitmentPortal.Models.DTOs.OpenAIOptions>(
+    builder.Configuration.GetSection(RecruitmentPortal.Models.DTOs.OpenAIOptions.SectionName));
+builder.Services.AddScoped<IResumeParserService, ResumeParserService>();
+builder.Services.AddHttpClient<IAIResumeScreeningService, OpenAIResumeScreeningService>();
+
 // Configure Permission-based Authorization
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();

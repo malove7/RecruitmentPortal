@@ -128,6 +128,269 @@ namespace RecruitmentPortal.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeConcern", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AIResumeScreeningId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Concern")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AIResumeScreeningId");
+
+                    b.ToTable("AIResumeConcerns");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeEvidence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AIResumeScreeningId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Evidence")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AIResumeScreeningId");
+
+                    b.ToTable("AIResumeEvidences");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeFollowUpQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AIResumeScreeningId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Skill")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AIResumeScreeningId");
+
+                    b.ToTable("AIResumeFollowUpQuestions");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeGap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AIResumeScreeningId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Gap")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AIResumeScreeningId");
+
+                    b.ToTable("AIResumeGaps");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeScreening", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AIModel")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CandidateExperience")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExperienceComments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExperienceStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobDescriptionSnapshot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("JobPositionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("JobRequirementsSnapshot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobTitleSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("OverallScore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PromptVersion")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("RawJsonResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Recommendation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RecruiterSummary")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequiredExperience")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResumeFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ResumeFilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobPositionId");
+
+                    b.ToTable("AIResumeScreenings");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeSkillEvaluation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AIResumeScreeningId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Confidence")
+                        .HasColumnType("float");
+
+                    b.Property<string>("EvidenceJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GapsJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MaxScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Skill")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AIResumeScreeningId");
+
+                    b.ToTable("AIResumeSkillEvaluations");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeStrength", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AIResumeScreeningId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Strength")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AIResumeScreeningId");
+
+                    b.ToTable("AIResumeStrengths");
+                });
+
             modelBuilder.Entity("RecruitmentPortal.Models.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
@@ -752,6 +1015,83 @@ namespace RecruitmentPortal.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeConcern", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.AIResumeScreening", "AIResumeScreening")
+                        .WithMany("Concerns")
+                        .HasForeignKey("AIResumeScreeningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AIResumeScreening");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeEvidence", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.AIResumeScreening", "AIResumeScreening")
+                        .WithMany("EvidenceExtracted")
+                        .HasForeignKey("AIResumeScreeningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AIResumeScreening");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeFollowUpQuestion", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.AIResumeScreening", "AIResumeScreening")
+                        .WithMany("FollowUpQuestions")
+                        .HasForeignKey("AIResumeScreeningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AIResumeScreening");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeGap", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.AIResumeScreening", "AIResumeScreening")
+                        .WithMany("Gaps")
+                        .HasForeignKey("AIResumeScreeningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AIResumeScreening");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeScreening", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.JobPosition", "JobPosition")
+                        .WithMany()
+                        .HasForeignKey("JobPositionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("JobPosition");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeSkillEvaluation", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.AIResumeScreening", "AIResumeScreening")
+                        .WithMany("Skills")
+                        .HasForeignKey("AIResumeScreeningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AIResumeScreening");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeStrength", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.AIResumeScreening", "AIResumeScreening")
+                        .WithMany("Strengths")
+                        .HasForeignKey("AIResumeScreeningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AIResumeScreening");
+                });
+
             modelBuilder.Entity("RecruitmentPortal.Models.Candidate", b =>
                 {
                     b.HasOne("RecruitmentPortal.Models.JobPosition", "JobPosition")
@@ -846,6 +1186,21 @@ namespace RecruitmentPortal.Migrations
                         .IsRequired();
 
                     b.Navigation("CandidateEvaluationForm");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.AIResumeScreening", b =>
+                {
+                    b.Navigation("Concerns");
+
+                    b.Navigation("EvidenceExtracted");
+
+                    b.Navigation("FollowUpQuestions");
+
+                    b.Navigation("Gaps");
+
+                    b.Navigation("Skills");
+
+                    b.Navigation("Strengths");
                 });
 
             modelBuilder.Entity("RecruitmentPortal.Models.Candidate", b =>

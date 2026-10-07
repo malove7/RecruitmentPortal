@@ -1,0 +1,13 @@
+namespace RecruitmentPortal.Models.DTOs
+{
+    public class OpenAIOptions
+    {
+        public const string SectionName = "OpenAI";
+
+        public string ApiKey { get; set; } = string.Empty;
+        public string Model { get; set; } = "gpt-4o-mini";
+        public string Endpoint { get; set; } = "https://api.openai.com/v1/chat/completions";
+        public int TimeoutSeconds { get; set; } = 90;
+        public string PromptVersion { get; set; } = "1.0";
+    }
+}

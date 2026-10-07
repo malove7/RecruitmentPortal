@@ -1,0 +1,475 @@
+@model RecruitmentPortal.Models.ViewModels.AIResumeScreeningResultViewModel
+
+@{
+    ViewData["Title"] = $"Screening Result - {Model.JobPositionTitle}";
+
+    string scoreColorClass = Model.OverallScore switch
+    {
+        >= 80 => "text-success",
+        >= 65 => "text-primary",
+        >= 50 => "text-warning",
+        _ => "text-danger"
+    };
+
+    string scoreBgClass = Model.OverallScore switch
+    {
+        >= 80 => "bg-success-subtle border-success-subtle",
+        >= 65 => "bg-primary-subtle border-primary-subtle",
+        >= 50 => "bg-warning-subtle border-warning-subtle",
+        _ => "bg-danger-subtle border-danger-subtle"
+    };
+
+    string recommendationBadgeClass = (Model.Recommendation ?? string.Empty).ToLowerInvariant() switch
+    {
+        var r when r.Contains("proceed") || r.Contains("hire") || r.Contains("advance") => "bg-success text-white",
+        var r when r.Contains("reservation") || r.Contains("consider") || r.Contains("hold") => "bg-warning text-dark",
+        var r when r.Contains("not") || r.Contains("reject") => "bg-danger text-white",
+        _ => "bg-primary text-white"
+    };
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header / Actions -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Screen Another
+                </a>
+                <a asp-action="History" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-history me-1"></i> History
+                </a>
+                <span class="badge rounded-pill bg-light text-muted border">ID: #@Model.Id</span>
+            </div>
+            <h1 class="h3 fw-bold text-dark mb-0">Screening Result: @Model.JobPositionTitle</h1>
+            <p class="text-muted small mb-0">
+                Resume: <strong>@Model.ResumeFileName</strong> &bull; Screened on @Model.ScreeningDate.ToLocalTime().ToString("MMM dd, yyyy HH:mm") by @Model.ScreenedBy
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (!string.IsNullOrWhiteSpace(Model.ResumeFilePath))
+            {
+                <a href="@Model.ResumeFilePath" target="_blank" download class="btn btn-outline-primary">
+                    <i class="fas fa-file-download me-1"></i> Download Resume
+                </a>
+            }
+            <a asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> New Screening
+            </a>
+        </div>
+    </div>
+
+    <!-- Top Hero Card: Overall Score & Recruiter Summary -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-body p-4">
+            <div class="row align-items-center g-4">
+                <!-- Score Block -->
+                <div class="col-md-3 text-center border-end">
+                    <div class="d-inline-flex flex-column align-items-center justify-content-center p-3 rounded-circle border @scoreBgClass" style="width: 130px; height: 130px;">
+                        <span class="display-5 fw-bold @scoreColorClass line-height-1">@Model.OverallScore</span>
+                        <span class="text-muted small fw-semibold text-uppercase">Score / 100</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge rounded-pill px-3 py-2 fs-6 @recommendationBadgeClass shadow-sm">
+                            @Model.Recommendation
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Recruiter Summary -->
+                <div class="col-md-9">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="fw-bold text-dark mb-0">
+                            <i class="fas fa-user-tie text-primary me-2"></i>AI Recruiter Summary
+                        </h5>
+                        <span class="badge rounded-pill bg-light text-secondary border small">
+                            Model: @Model.AIModel &bull; Prompt v@(Model.PromptVersion)
+                        </span>
+                    </div>
+                    <p class="text-secondary fs-6 mb-3 lh-base p-3 bg-light rounded-3 border">
+                        @Model.RecruiterSummary
+                    </p>
+
+                    <!-- Key Metadata Row -->
+                    <div class="row g-2 text-dark small">
+                        <div class="col-sm-4">
+                            <span class="text-muted d-block">Target Position:</span>
+                            <strong>@Model.JobPositionTitle</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="text-muted d-block">Resume File:</span>
+                            <span class="text-truncate d-inline-block" style="max-width: 220px;" title="@Model.ResumeFileName">
+                                @Model.ResumeFileName
+                            </span>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="text-muted d-block">Screened Date:</span>
+                            <span>@Model.ScreeningDate.ToLocalTime().ToString("f")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Analysis Card -->
+    @if (Model.ExperienceAnalysis != null && (!string.IsNullOrWhiteSpace(Model.ExperienceAnalysis.RequiredExperience) || !string.IsNullOrWhiteSpace(Model.ExperienceAnalysis.CandidateExperience)))
+    {
+        <div class="card shadow-sm border mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title mb-0 fw-semibold text-dark">
+                    <i class="fas fa-business-time text-primary me-2"></i>Experience Analysis
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded border">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Required Experience</span>
+                            <span class="fs-6 fw-bold text-dark">@(string.IsNullOrWhiteSpace(Model.ExperienceAnalysis.RequiredExperience) ? "Not specified" : Model.ExperienceAnalysis.RequiredExperience)</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded border">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Candidate Experience</span>
+                            <span class="fs-6 fw-bold text-dark">@(string.IsNullOrWhiteSpace(Model.ExperienceAnalysis.CandidateExperience) ? "Not clearly stated" : Model.ExperienceAnalysis.CandidateExperience)</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded border">
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Experience Match Status</span>
+                            <span class="badge rounded-pill bg-primary-subtle text-primary border px-3 py-2 fs-6">
+                                @Model.ExperienceAnalysis.Status
+                            </span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.ExperienceAnalysis.Comments))
+                    {
+                        <div class="col-12">
+                            <div class="p-2 px-3 bg-light-subtle rounded border small text-secondary">
+                                <strong>Assessment:</strong> @Model.ExperienceAnalysis.Comments
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Skill Analysis Table -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-semibold text-dark">
+                <i class="fas fa-layer-group text-primary me-2"></i>Skill Analysis
+            </h5>
+            <span class="badge rounded-pill bg-light text-muted border">@Model.Skills.Count Skills Evaluated</span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Skills.Count == 0)
+            {
+                <div class="text-center py-4 text-muted">No specific skill evaluations returned.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3 text-uppercase text-muted small fw-bold" style="width: 25%;">Skill</th>
+                                <th class="py-3 text-uppercase text-muted small fw-bold text-center" style="width: 15%;">Score</th>
+                                <th class="py-3 text-uppercase text-muted small fw-bold text-center" style="width: 18%;">Status</th>
+                                <th class="py-3 text-uppercase text-muted small fw-bold text-center" style="width: 12%;">Confidence</th>
+                                <th class="pe-4 py-3 text-uppercase text-muted small fw-bold" style="width: 30%;">Resume Evidence & Gaps</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var skill in Model.Skills)
+                            {
+                                string skillScoreColor = skill.Score switch
+                                {
+                                    >= 9 => "bg-success",
+                                    >= 7 => "bg-primary",
+                                    >= 5 => "bg-warning",
+                                    _ => "bg-danger"
+                                };
+
+                                string statusBadge = skill.Score switch
+                                {
+                                    >= 9 => "bg-success-subtle text-success border-success-subtle",
+                                    >= 7 => "bg-primary-subtle text-primary border-primary-subtle",
+                                    >= 5 => "bg-warning-subtle text-warning border-warning-subtle",
+                                    _ => "bg-danger-subtle text-danger border-danger-subtle"
+                                };
+
+                                <tr>
+                                    <td class="ps-4 fw-semibold text-dark">
+                                        @skill.Skill
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex flex-column align-items-center">
+                                            <span class="fw-bold fs-6">@skill.Score <span class="text-muted small">/ @skill.MaxScore</span></span>
+                                            <div class="progress" style="width: 80px; height: 6px;">
+                                                <div class="progress-bar @skillScoreColor" role="progressbar" style="width: @(skill.Score * 10)%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill border px-2 py-1 @statusBadge">
+                                            @skill.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-center text-muted small fw-medium">
+                                        @((skill.Confidence * 100).ToString("F0"))%
+                                    </td>
+                                    <td class="pe-4 py-2">
+                                        @if (skill.Evidence.Count > 0)
+                                        {
+                                            <div class="mb-1">
+                                                <span class="text-success small fw-bold"><i class="fas fa-check-circle me-1"></i>Evidence:</span>
+                                                <ul class="mb-1 ps-3 small text-dark">
+                                                    @foreach (var ev in skill.Evidence)
+                                                    {
+                                                        <li>@ev</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                        @if (skill.Gaps.Count > 0)
+                                        {
+                                            <div>
+                                                <span class="text-danger small fw-bold"><i class="fas fa-exclamation-circle me-1"></i>Gaps:</span>
+                                                <ul class="mb-0 ps-3 small text-muted">
+                                                    @foreach (var gap in skill.Gaps)
+                                                    {
+                                                        <li>@gap</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                        @if (skill.Evidence.Count == 0 && skill.Gaps.Count == 0)
+                                        {
+                                            <span class="text-muted small fst-italic">No specific notes</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Strengths & Evidence Section -->
+    <div class="row g-4 mb-4">
+        <!-- Candidate Strengths -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold text-dark">
+                        <i class="fas fa-thumbs-up text-success me-2"></i>Key Strengths
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (Model.Strengths.Count == 0)
+                    {
+                        <p class="text-muted mb-0 small">No explicit strengths highlighted.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var strength in Model.Strengths)
+                            {
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-check-circle text-success mt-1 me-2 flex-shrink-0"></i>
+                                    <span class="text-dark small">@strength</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Evidence Extracted -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold text-dark">
+                        <i class="fas fa-search-plus text-primary me-2"></i>Extracted Resume Evidence
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (Model.EvidenceExtracted.Count == 0)
+                    {
+                        <p class="text-muted mb-0 small">No itemized evidence entries extracted.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var ev in Model.EvidenceExtracted)
+                            {
+                                <div class="list-group-item px-0 py-2 border-light">
+                                    <span class="badge rounded-pill bg-light text-primary border me-1 small">@ev.Category</span>
+                                    <span class="text-dark small">@ev.Evidence</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Concerns & Gaps Section -->
+    <div class="row g-4 mb-4">
+        <!-- Concerns -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold text-dark">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>Identified Concerns
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (Model.Concerns.Count == 0)
+                    {
+                        <p class="text-muted mb-0 small">No notable concerns identified.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var concern in Model.Concerns)
+                            {
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-exclamation-circle text-warning mt-1 me-2 flex-shrink-0"></i>
+                                    <span class="text-dark small">@concern</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Requirement Gaps -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold text-dark">
+                        <i class="fas fa-times-circle text-danger me-2"></i>Requirement Gaps
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (Model.Gaps.Count == 0)
+                    {
+                        <p class="text-muted mb-0 small">No major requirement gaps identified.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var gap in Model.Gaps)
+                            {
+                                <li class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-minus-circle text-danger mt-1 me-2 flex-shrink-0"></i>
+                                    <span class="text-dark small">@gap</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Follow-Up Interview Questions Card (Sorted High Priority First) -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-semibold text-dark">
+                <i class="fas fa-comments text-primary me-2"></i>Targeted Follow-Up Interview Questions
+            </h5>
+            <span class="badge rounded-pill bg-light text-muted border">High Priority First</span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.FollowUpQuestions.Count == 0)
+            {
+                <div class="text-center py-4 text-muted">No follow-up questions generated.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3 text-uppercase text-muted small fw-bold" style="width: 12%;">Priority</th>
+                                <th class="py-3 text-uppercase text-muted small fw-bold" style="width: 18%;">Skill / Category</th>
+                                <th class="py-3 text-uppercase text-muted small fw-bold" style="width: 42%;">Targeted Question</th>
+                                <th class="pe-4 py-3 text-uppercase text-muted small fw-bold" style="width: 28%;">Recruiter Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var q in Model.FollowUpQuestions)
+                            {
+                                string priorityBadge = (q.Priority ?? string.Empty).ToLowerInvariant() switch
+                                {
+                                    "high" => "bg-danger text-white",
+                                    "medium" => "bg-warning-subtle text-warning border-warning-subtle",
+                                    _ => "bg-secondary-subtle text-secondary border"
+                                };
+
+                                <tr>
+                                    <td class="ps-4">
+                                        <span class="badge rounded-pill px-2 py-1 @priorityBadge">
+                                            @q.Priority
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold text-dark">@q.Skill</div>
+                                        <small class="text-muted">@q.Category</small>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="text-dark fw-medium small mb-0 p-2 bg-light rounded border">
+                                            <i class="fas fa-question-circle text-primary me-1"></i>@q.Question
+                                        </div>
+                                    </td>
+                                    <td class="pe-4 text-muted small">
+                                        @q.Reason
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Job Position Snapshot Collapsible Section -->
+    <div class="accordion mb-4" id="snapshotAccordion">
+        <div class="accordion-item border shadow-sm rounded">
+            <h2 class="accordion-header" id="headingSnapshot">
+                <button class="accordion-button collapsed bg-white text-dark fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSnapshot" aria-expanded="false" aria-controls="collapseSnapshot">
+                    <i class="fas fa-camera text-secondary me-2"></i>View Job Position Criteria Snapshot (Captured During Screening)
+                </button>
+            </h2>
+            <div id="collapseSnapshot" class="accordion-collapse collapse" aria-labelledby="headingSnapshot" data-bs-parent="#snapshotAccordion">
+                <div class="accordion-body p-4 bg-light">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="text-uppercase small fw-bold text-muted d-block mb-1">Job Description Snapshot</label>
+                            <div class="p-3 bg-white rounded border small text-dark" style="white-space: pre-wrap; max-height: 250px; overflow-y: auto;">
+                                @(string.IsNullOrWhiteSpace(Model.JobDescriptionSnapshot) ? "No description recorded." : Model.JobDescriptionSnapshot)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-uppercase small fw-bold text-muted d-block mb-1">Job Requirements & Skills Snapshot</label>
+                            <div class="p-3 bg-white rounded border small text-dark" style="white-space: pre-wrap; max-height: 250px; overflow-y: auto;">
+                                @(string.IsNullOrWhiteSpace(Model.JobRequirementsSnapshot) ? "No requirements recorded." : Model.JobRequirementsSnapshot)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
