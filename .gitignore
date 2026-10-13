@@ -6,4 +6,5 @@ obj/
 .vscode/
 .vs/
 appsettings.Development.json
+appsettings.Production.json
 App_Data/
