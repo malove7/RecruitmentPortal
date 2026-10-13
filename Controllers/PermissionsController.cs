@@ -119,6 +119,7 @@ namespace RecruitmentPortal.Controllers
             if (permissionName.EndsWith("Interviews")) return "Interviews";
             if (permissionName.EndsWith("Interviewers")) return "Interviewers";
             if (permissionName.EndsWith("Feedbacks")) return "Feedbacks";
+            if (permissionName.EndsWith("KnowledgeBases")) return "Knowledge Base";
             if (permissionName.EndsWith("Dashboard")) return "General";
             return "Other";
         }

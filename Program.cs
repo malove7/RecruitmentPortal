@@ -79,6 +79,19 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // AI Resume Screening Services & Configuration
 builder.Services.Configure<RecruitmentPortal.Models.DTOs.OpenAIOptions>(
     builder.Configuration.GetSection(RecruitmentPortal.Models.DTOs.OpenAIOptions.SectionName));
+builder.Services.Configure<RecruitmentPortal.Models.DTOs.PineconeOptions>(
+    builder.Configuration.GetSection(RecruitmentPortal.Models.DTOs.PineconeOptions.SectionName));
+builder.Services.Configure<RecruitmentPortal.Models.DTOs.KnowledgeBaseOptions>(
+    builder.Configuration.GetSection(RecruitmentPortal.Models.DTOs.KnowledgeBaseOptions.SectionName));
+
+// Knowledge Base & Document Services
+builder.Services.AddScoped<IDocumentTextExtractor, DocumentTextExtractor>();
+builder.Services.AddScoped<ITextChunkingService, TextChunkingService>();
+builder.Services.AddHttpClient<IOpenAIEmbeddingService, OpenAIEmbeddingService>();
+builder.Services.AddHttpClient<IPineconeVectorService, PineconeVectorService>();
+builder.Services.AddScoped<IKnowledgeBaseIngestionService, KnowledgeBaseIngestionService>();
+builder.Services.AddHttpClient<IRagChatService, RagChatService>();
+
 builder.Services.AddScoped<IResumeParserService, ResumeParserService>();
 builder.Services.AddHttpClient<IAIResumeScreeningService, OpenAIResumeScreeningService>();
 

@@ -98,6 +98,20 @@
                             </a>
                         </li>
                     }
+
+                    @if (User.HasClaim("Permission", "ViewKnowledgeBases") || User.HasClaim("Permission", "AskKnowledgeBases") || User.IsInRole("Admin"))
+                    {
+                        var currentCtrl = ViewContext.RouteData.Values["Controller"]?.ToString();
+                        var isKbActive = currentCtrl == "KnowledgeBases" || currentCtrl == "KnowledgeBaseChat";
+                        var targetController = (User.HasClaim("Permission", "ViewKnowledgeBases") || User.IsInRole("Admin")) ? "KnowledgeBases" : "KnowledgeBaseChat";
+                        <li class="nav-item">
+                            <a class="nav-link @(isKbActive ? "active" : "")"
+                               asp-area="" asp-controller="@targetController" asp-action="Index">
+                                <i class="fas fa-book-open"></i>
+                                <span>Knowledge Base</span>
+                            </a>
+                        </li>
+                    }
                     
                     @if (User.IsInRole("Admin"))
                     {

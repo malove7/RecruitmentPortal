@@ -28,6 +28,11 @@ namespace RecruitmentPortal.Data
         public DbSet<AIResumeConcern> AIResumeConcerns { get; set; }
         public DbSet<AIResumeGap> AIResumeGaps { get; set; }
         public DbSet<AIResumeFollowUpQuestion> AIResumeFollowUpQuestions { get; set; }
+        public DbSet<KnowledgeBase> KnowledgeBases { get; set; }
+        public DbSet<KnowledgeBaseDocument> KnowledgeBaseDocuments { get; set; }
+        public DbSet<KnowledgeBaseChunk> KnowledgeBaseChunks { get; set; }
+        public DbSet<KnowledgeBaseChatSession> KnowledgeBaseChatSessions { get; set; }
+        public DbSet<KnowledgeBaseChatMessage> KnowledgeBaseChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,6 +99,52 @@ namespace RecruitmentPortal.Data
                 .HasOne(e => e.AIResumeScreening)
                 .WithMany(s => s.FollowUpQuestions)
                 .HasForeignKey(e => e.AIResumeScreeningId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Knowledge Base relationships
+            modelBuilder.Entity<KnowledgeBase>()
+                .HasOne(k => k.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(k => k.CreatedByUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<KnowledgeBaseDocument>()
+                .HasOne(d => d.KnowledgeBase)
+                .WithMany(k => k.Documents)
+                .HasForeignKey(d => d.KnowledgeBaseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<KnowledgeBaseDocument>()
+                .HasOne(d => d.UploadedByUser)
+                .WithMany()
+                .HasForeignKey(d => d.UploadedByUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<KnowledgeBaseChunk>()
+                .HasOne(c => c.KnowledgeBaseDocument)
+                .WithMany(d => d.Chunks)
+                .HasForeignKey(c => c.KnowledgeBaseDocumentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<KnowledgeBaseChunk>()
+                .HasIndex(c => c.VectorId);
+
+            modelBuilder.Entity<KnowledgeBaseChatSession>()
+                .HasOne(s => s.KnowledgeBase)
+                .WithMany(k => k.ChatSessions)
+                .HasForeignKey(s => s.KnowledgeBaseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<KnowledgeBaseChatSession>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<KnowledgeBaseChatMessage>()
+                .HasOne(m => m.ChatSession)
+                .WithMany(s => s.Messages)
+                .HasForeignKey(m => m.ChatSessionId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

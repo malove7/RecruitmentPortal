@@ -51,7 +51,8 @@ namespace RecruitmentPortal.Data
                     Permissions.ViewJobPositions,
                     Permissions.ViewInterviews, Permissions.CreateInterviews, Permissions.EditInterviews,
                     Permissions.ViewFeedbacks, Permissions.CreateFeedbacks, Permissions.EditFeedbacks,
-                    Permissions.ViewEvaluationForms, Permissions.EditEvaluationForms, Permissions.DeleteEvaluationForms
+                    Permissions.ViewEvaluationForms, Permissions.EditEvaluationForms, Permissions.DeleteEvaluationForms,
+                    Permissions.ViewKnowledgeBases, Permissions.ManageKnowledgeBases, Permissions.AskKnowledgeBases
                 };
                 foreach (var p in hrPermissions)
                 {
@@ -73,7 +74,8 @@ namespace RecruitmentPortal.Data
                     Permissions.ViewJobPositions,
                     Permissions.ViewInterviews,
                     Permissions.ViewFeedbacks,
-                    Permissions.ViewEvaluationForms
+                    Permissions.ViewEvaluationForms,
+                    Permissions.AskKnowledgeBases
                 };
                 foreach (var p in interviewerPermissions)
                 {

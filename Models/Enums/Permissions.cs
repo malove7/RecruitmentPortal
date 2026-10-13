@@ -64,6 +64,14 @@ namespace RecruitmentPortal.Models.Enums
         [Description("Edit Evaluation Forms")]
         EditEvaluationForms = 62,
         [Description("Delete Evaluation Forms")]
-        DeleteEvaluationForms = 63
+        DeleteEvaluationForms = 63,
+
+        // Knowledge Base
+        [Description("View Knowledge Bases")]
+        ViewKnowledgeBases = 70,
+        [Description("Manage Knowledge Bases")]
+        ManageKnowledgeBases = 71,
+        [Description("Ask Knowledge Bases")]
+        AskKnowledgeBases = 72
     }
 }

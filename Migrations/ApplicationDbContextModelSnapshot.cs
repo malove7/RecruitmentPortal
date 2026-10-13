@@ -889,6 +889,212 @@ namespace RecruitmentPortal.Migrations
                     b.ToTable("JobPositions");
                 });
 
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("KnowledgeBases");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChatSessionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CitationsJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatSessionId");
+
+                    b.ToTable("KnowledgeBaseChatMessages");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseChatSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KnowledgeBaseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KnowledgeBaseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("KnowledgeBaseChatSessions");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseChunk", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChunkIndex")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KnowledgeBaseDocumentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PageNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TokenCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VectorId")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KnowledgeBaseDocumentId");
+
+                    b.HasIndex("VectorId");
+
+                    b.ToTable("KnowledgeBaseChunks");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChunkCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContentType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ExtractedCharCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<long>("FileSizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("IndexedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KnowledgeBaseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StorageFilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UploadedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KnowledgeBaseId");
+
+                    b.HasIndex("UploadedByUserId");
+
+                    b.ToTable("KnowledgeBaseDocuments");
+                });
+
             modelBuilder.Entity("RecruitmentPortal.Models.TechnicalEvaluationRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -1166,6 +1372,74 @@ namespace RecruitmentPortal.Migrations
                     b.Navigation("Interviewer");
                 });
 
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBase", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseChatMessage", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.KnowledgeBaseChatSession", "ChatSession")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChatSession");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseChatSession", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.KnowledgeBase", "KnowledgeBase")
+                        .WithMany("ChatSessions")
+                        .HasForeignKey("KnowledgeBaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecruitmentPortal.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("KnowledgeBase");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseChunk", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.KnowledgeBaseDocument", "KnowledgeBaseDocument")
+                        .WithMany("Chunks")
+                        .HasForeignKey("KnowledgeBaseDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KnowledgeBaseDocument");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseDocument", b =>
+                {
+                    b.HasOne("RecruitmentPortal.Models.KnowledgeBase", "KnowledgeBase")
+                        .WithMany("Documents")
+                        .HasForeignKey("KnowledgeBaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecruitmentPortal.Models.ApplicationUser", "UploadedByUser")
+                        .WithMany()
+                        .HasForeignKey("UploadedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("KnowledgeBase");
+
+                    b.Navigation("UploadedByUser");
+                });
+
             modelBuilder.Entity("RecruitmentPortal.Models.TechnicalEvaluationRecord", b =>
                 {
                     b.HasOne("RecruitmentPortal.Models.CandidateEvaluationForm", "CandidateEvaluationForm")
@@ -1229,6 +1503,23 @@ namespace RecruitmentPortal.Migrations
             modelBuilder.Entity("RecruitmentPortal.Models.JobPosition", b =>
                 {
                     b.Navigation("Candidates");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBase", b =>
+                {
+                    b.Navigation("ChatSessions");
+
+                    b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseChatSession", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("RecruitmentPortal.Models.KnowledgeBaseDocument", b =>
+                {
+                    b.Navigation("Chunks");
                 });
 #pragma warning restore 612, 618
         }
