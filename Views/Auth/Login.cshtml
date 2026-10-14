@@ -221,7 +221,12 @@
         <!-- Right Form Area -->
         <div class="form-section">
             <div class="form-container">
-                <div class="app-title">Spacestem Recruit</div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="app-title mb-0">Spacestem Recruit</div>
+                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none small text-muted">
+                        &larr; Back to Home
+                    </a>
+                </div>
                 
                 <h1 class="login-heading">Welcome Back!</h1>
                 <p class="login-subtext">
@@ -229,6 +234,10 @@
                 </p>
 
                 <form asp-action="Login" method="post">
+                    @if (ViewData["ReturnUrl"] != null)
+                    {
+                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                    }
                     <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
                     
                     <div class="form-group">

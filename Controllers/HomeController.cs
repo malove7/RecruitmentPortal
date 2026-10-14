@@ -4,12 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using RecruitmentPortal.Data;
 using RecruitmentPortal.Models;
 using RecruitmentPortal.Models.ViewModels;
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace RecruitmentPortal.Controllers;
 
-[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -21,7 +19,14 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    [AllowAnonymous]
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Dashboard()
     {
         var viewModel = new DashboardViewModel
         {
@@ -46,11 +51,13 @@ public class HomeController : Controller
         return View(viewModel);
     }
 
+    [AllowAnonymous]
     public IActionResult Privacy()
     {
         return View();
     }
 
+    [AllowAnonymous]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
