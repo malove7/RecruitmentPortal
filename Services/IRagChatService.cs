@@ -23,7 +23,13 @@ namespace RecruitmentPortal.Services
 
     public interface IRagChatService
     {
-        Task<RagChatResponse> AskQuestionAsync(int knowledgeBaseId, string question, int? sessionId = null, string? userId = null, CancellationToken cancellationToken = default);
+        Task<RagChatResponse> AskQuestionAsync(
+            int knowledgeBaseId, 
+            string question, 
+            int? sessionId = null, 
+            string? userId = null, 
+            CancellationToken cancellationToken = default,
+            bool includeCitations = true);
         string BuildUserPrompt(string question, IEnumerable<RagCitation> citations);
     }
 }

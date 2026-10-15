@@ -127,5 +127,27 @@ namespace RecruitmentPortal.Tests.Services
             session.Messages.Last().Role.Should().Be("assistant");
             session.Messages.Last().Content.Should().Be("I could not find this in the selected knowledge base.");
         }
+
+        [Fact]
+        public void SystemPromptWithoutCitations_ShouldInstructNotToIncludeCitations()
+        {
+            RagChatService.SystemPromptWithoutCitations.Should().Contain("Do NOT mention or include any citations, references, document names, chunk numbers, or page numbers");
+        }
+
+        [Theory]
+        [InlineData(
+            "Annual leave resets on January 1st (Citation 2, HR POLICY HANDBOOK_Updated.pdf, Page 36, Chunk 35).",
+            "Annual leave resets on January 1st.")]
+        [InlineData(
+            "Flexible work is supported [Citation 1, handbook.pdf]. Contact HR for details.",
+            "Flexible work is supported. Contact HR for details.")]
+        [InlineData(
+            "Working hours are 9 to 5 (Policy.pdf, Page 12).",
+            "Working hours are 9 to 5.")]
+        public void StripCitationReferences_ShouldRemoveCitationArtifacts(string input, string expected)
+        {
+            var result = RagChatService.StripCitationReferences(input);
+            result.Should().Be(expected);
+        }
     }
 }

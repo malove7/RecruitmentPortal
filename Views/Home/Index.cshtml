@@ -29,6 +29,7 @@
     <link rel="preload" href="~/assets/spacestem-logo.png" as="image" />
     <link rel="stylesheet" href="~/css/homepage.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/homepage-chat-widget.css" asp-append-version="true" />
   </head>
   <body>
     <div class="site-shell">
@@ -82,12 +83,6 @@
             <div class="hero-actions" aria-label="Homepage actions">
               <a class="primary-action" href="#workflow">Explore workflow</a>
               <a class="secondary-action" href="#features">View AI features</a>
-              @if (User.Identity?.IsAuthenticated != true)
-              {
-                <button type="button" class="portal-action" id="heroPortalLoginBtn">
-                  <i class="fas fa-arrow-right-to-bracket me-2"></i> Portal Login
-                </button>
-              }
             </div>
             <dl class="proof-strip">
               <div>
@@ -272,7 +267,6 @@
           // Trigger buttons
           const triggerBtns = [
             document.getElementById('headerLoginBtn'),
-            document.getElementById('heroPortalLoginBtn'),
             document.getElementById('demoLoginBtn')
           ].filter(Boolean);
 
@@ -397,5 +391,185 @@
         })();
       </script>
     }
+
+    <!-- Public Homepage Chat + Voice Assistant Widget -->
+    <div id="homepageChatWidgetWrapper">
+      <!-- Floating Launcher Button (Pill Design) -->
+      <button
+        type="button"
+        class="chat-widget-launcher"
+        id="chatWidgetLauncher"
+        aria-label="Chat with us"
+        aria-expanded="false"
+        aria-controls="chatWidgetPanel"
+      >
+        <span class="launcher-content launcher-content-closed">
+          <i class="fas fa-comment-dots launcher-icon" aria-hidden="true"></i>
+          <span class="launcher-label">Chat with us!</span>
+        </span>
+        <span class="launcher-content launcher-content-open" aria-hidden="true">
+          <i class="fas fa-times launcher-icon" aria-hidden="true"></i>
+          <span class="launcher-label">Close</span>
+        </span>
+        <span class="chat-launcher-badge" id="chatLauncherBadge" title="Ask a question"></span>
+      </button>
+
+      <!-- Chat Widget Panel -->
+      <aside
+        class="chat-widget-panel"
+        id="chatWidgetPanel"
+        role="complementary"
+        aria-label="Space Stem Recruitment Assistant"
+        aria-hidden="true"
+      >
+        <!-- Header -->
+        <header class="chat-widget-header">
+          <div class="chat-header-identity">
+            <div class="chat-bot-avatar">
+              <i class="fas fa-robot"></i>
+              <span class="online-status-dot" title="Online"></span>
+            </div>
+            <div class="chat-header-titles">
+              <span class="chat-header-title">Space Stem Assistant</span>
+              <span class="chat-header-subtitle">
+                <i class="fas fa-sparkles text-warning" style="font-size: 0.7rem;"></i> AI Recruitment &amp; Knowledge Base
+              </span>
+            </div>
+          </div>
+          <div class="chat-header-actions">
+            <button
+              type="button"
+              class="chat-header-btn"
+              id="chatResetBtn"
+              title="Start New Conversation"
+              aria-label="Start new conversation"
+            >
+              <i class="fas fa-rotate-right"></i>
+            </button>
+            <button
+              type="button"
+              class="chat-header-btn"
+              id="chatCloseBtn"
+              title="Close chat"
+              aria-label="Close assistant"
+            >
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Status Toast Banner -->
+        <div class="chat-status-toast" id="chatStatusToast" role="status">
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <span id="chatStatusToastText">Transcribing audio...</span>
+        </div>
+
+        <!-- Error Alert -->
+        <div class="chat-error-alert" id="chatErrorAlert" role="alert">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span id="chatErrorAlertText"></span>
+        </div>
+
+        <!-- Chat Stream Body -->
+        <div class="chat-widget-body" id="chatMessagesBody" role="log" aria-live="polite">
+          <!-- Initial Welcome Message -->
+          <div class="chat-message-row assistant" id="chatInitialWelcome">
+            <div class="chat-message-avatar">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="chat-message-content">
+              <div class="chat-bubble">
+                Hello! I am Space Stem's Recruitment Assistant. Ask me anything about our open roles, interview process, policies, or company culture.
+              </div>
+              <div class="chat-message-time">Just now</div>
+            </div>
+          </div>
+
+          <!-- Initial Suggestion Chips -->
+          <div class="chat-suggestion-chips" id="chatInitialChips">
+            <button type="button" class="chat-suggestion-chip" data-prompt="What roles are currently open at Space Stem?">
+              <span>What roles are currently open?</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="button" class="chat-suggestion-chip" data-prompt="What is the interview and hiring process?">
+              <span>What is the interview process?</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="button" class="chat-suggestion-chip" data-prompt="What benefits and work perks are offered?">
+              <span>What benefits are offered?</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer / Input Area -->
+        <footer class="chat-widget-footer">
+          <!-- Voice Recording Live Overlay -->
+          <div class="chat-voice-recording-overlay" id="chatVoiceOverlay" aria-live="assertive">
+            <div class="recording-status-box">
+              <span class="recording-pulsing-circle"></span>
+              <div class="recording-label-wrap">
+                <span class="recording-label-text">Listening...</span>
+                <span class="recording-timer-text" id="recordingTimerDisplay">0:00</span>
+              </div>
+            </div>
+            <div class="recording-controls">
+              <button
+                type="button"
+                class="recording-cancel-btn"
+                id="cancelRecordingBtn"
+                title="Cancel voice input"
+                aria-label="Cancel recording"
+              >
+                <i class="fas fa-trash-can"></i>
+              </button>
+              <button
+                type="button"
+                class="recording-stop-btn"
+                id="stopRecordingBtn"
+                title="Send voice question"
+                aria-label="Done recording"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Text Input Form -->
+          <form class="chat-input-form" id="chatInputForm" onsubmit="return false;">
+            <input
+              type="text"
+              class="chat-input-field"
+              id="chatInputField"
+              placeholder="Ask a question..."
+              maxlength="1000"
+              autocomplete="off"
+              aria-label="Ask a question"
+            />
+            <button
+              type="button"
+              class="chat-action-btn chat-mic-btn"
+              id="chatMicBtn"
+              title="Ask using voice"
+              aria-label="Speak your question"
+            >
+              <i class="fas fa-microphone"></i>
+            </button>
+            <button
+              type="submit"
+              class="chat-action-btn chat-send-btn"
+              id="chatSendBtn"
+              title="Send question"
+              aria-label="Send question"
+            >
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </footer>
+      </aside>
+    </div>
+
+    <!-- Homepage Chat Widget Script -->
+    <script src="~/js/homepage-chat-widget.js" asp-append-version="true"></script>
   </body>
 </html>

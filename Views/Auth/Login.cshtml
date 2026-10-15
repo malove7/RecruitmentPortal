@@ -2,268 +2,251 @@
     Layout = null;
     ViewData["Title"] = "Login";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spacestem Recruit - Login</title>
+    <title>Sign In - Space Stem Recruitment Portal</title>
     
-    <!-- Google Fonts -->
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
+    
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            background-color: #fff;
-        }
-
-        .split-layout {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Left Side: Branded Identity */
-        .brand-section {
-            flex: 1;
-            background: linear-gradient(135deg, #4A4AFB 0%, #2929B5 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Decorative Abstract Lines */
-        .brand-section::before {
-            content: '';
-            position: absolute;
-            top: -10%;
-            left: -10%;
-            width: 60%;
-            height: 60%;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        .brand-section::after {
-            content: '';
-            position: absolute;
-            bottom: -20%;
-            right: -20%;
-            width: 80%;
-            height: 80%;
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-        }
-
-        .brand-logo {
-            font-size: 5rem;
-            margin-bottom: 2rem;
-            line-height: 1;
-        }
-
-        .brand-heading {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-            z-index: 10;
-        }
-
-        .brand-subtext {
-            font-size: 1.1rem;
-            font-weight: 300;
-            opacity: 0.9;
-            max-width: 80%;
-            line-height: 1.6;
-            z-index: 10;
-        }
-
-        /* Right Side: Login Form */
-        .form-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 4rem;
-            background-color: #ffffff;
-        }
-
-        .form-container {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .app-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-        }
-
-        .login-heading {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #1a1a1a;
-        }
-
-        .login-subtext {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-bottom: 2rem;
-        }
-
-        .login-subtext a {
-            color: #1a1a1a;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-
-        /* Minimalist Input Styling */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-control {
-            border: none;
-            border-bottom: 2px solid #e0e0e0;
-            border-radius: 0;
-            padding: 0.75rem 0;
-            font-size: 1rem;
-            color: #1a1a1a;
-            background-color: transparent;
-        }
-        
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #1a1a1a;
-            background-color: transparent;
-        }
-
-        .form-control::placeholder {
-            color: #adb5bd;
-            font-weight: 400;
-        }
-
-        /* Buttons */
-        .btn-custom {
-            width: 100%;
-            padding: 0.8rem;
-            font-weight: 600;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary-custom {
-            background-color: #1a1a1a;
-            color: white;
-            border: 1px solid #1a1a1a;
-        }
-
-        .btn-primary-custom:hover {
-            background-color: #333;
-            color: white;
-        }
-
-
-
-
-        /* Responsive */
-        @@media (max-width: 768px) {
-            .split-layout {
-                flex-direction: column;
-            }
-            .brand-section {
-                padding: 3rem 2rem;
-                flex: none;
-            }
-            .brand-heading {
-                font-size: 2.5rem;
-            }
-            .form-section {
-                padding: 3rem 2rem;
-            }
-        }
-    </style>
+    <!-- Theme & Auth Styles -->
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
 </head>
 <body>
 
-    <div class="split-layout">
+    <div class="auth-split-wrapper">
         
-        <!-- Left Banner Area -->
-        <div class="brand-section">
-            <div class="brand-logo">*</div>
-            <div class="brand-heading">
-                Hello<br />
-                Spacestem Recruit! 👋
+        <!-- Left Side: Branded Identity & Features Showcase -->
+        <aside class="auth-showcase-panel" aria-label="Brand Overview">
+            <div class="showcase-header">
+                <a asp-controller="Home" asp-action="Index" class="showcase-brand-link" title="Space Stem Home">
+                    <span class="showcase-brand-text">SPACE <span class="brand-highlight">STEM</span></span>
+                </a>
             </div>
-            <div class="brand-subtext">
-                Say goodbye to repetitive and manual recruitment tasks in Excel. Boost your productivity with Spacestem Recruit and save valuable time!
-            </div>
-        </div>
 
-        <!-- Right Form Area -->
-        <div class="form-section">
-            <div class="form-container">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="app-title mb-0">Spacestem Recruit</div>
-                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none small text-muted">
-                        &larr; Back to Home
+            <div class="showcase-main-content">
+                <div class="showcase-eyebrow">
+                    <i class="fas fa-sparkles"></i> AI Recruitment Platform
+                </div>
+                <h1 class="showcase-headline">
+                    Empowering modern recruitment teams.
+                </h1>
+                <p class="showcase-lead">
+                    One unified command center to source talent, evaluate candidates collaboratively, and accelerate hiring decisions.
+                </p>
+
+                <div class="showcase-features-list">
+                    <div class="showcase-feature-item">
+                        <div class="showcase-feature-icon">
+                            <i class="fas fa-file-lines"></i>
+                        </div>
+                        <div class="showcase-feature-text">
+                            <div class="showcase-feature-title">Smart Resume Screening</div>
+                            <div class="showcase-feature-desc">Automated CV parsing, qualification matching, and candidate ranking.</div>
+                        </div>
+                    </div>
+
+                    <div class="showcase-feature-item">
+                        <div class="showcase-feature-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="showcase-feature-text">
+                            <div class="showcase-feature-title">Structured Evaluations</div>
+                            <div class="showcase-feature-desc">Objective scorecards, salary expectations, and multi-round interviewer feedback.</div>
+                        </div>
+                    </div>
+
+                    <div class="showcase-feature-item">
+                        <div class="showcase-feature-icon">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div class="showcase-feature-text">
+                            <div class="showcase-feature-title">Role-Based Security</div>
+                            <div class="showcase-feature-desc">Strict JWT authentication and fine-grained permissions for Admins, HR, and Interviewers.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="showcase-footer">
+                <span>Space Stem Portal &bull; Enterprise</span>
+                <span class="showcase-status">
+                    <span class="status-dot-live"></span> All systems operational
+                </span>
+            </div>
+        </aside>
+
+        <!-- Right Side: Login Form Area -->
+        <main class="auth-form-panel">
+            <div class="auth-form-container">
+                
+                <div class="auth-top-nav">
+                    <a asp-controller="Home" asp-action="Index" class="auth-back-link">
+                        <i class="fas fa-arrow-left"></i> Back to Homepage
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                        <span class="mobile-brand-text">SPACE <span class="brand-highlight">STEM</span></span>
                     </a>
                 </div>
                 
-                <h1 class="login-heading">Welcome Back!</h1>
-                <p class="login-subtext">
-                    Please enter your credentials to login.
-                </p>
+                <div class="auth-heading-wrap">
+                    <h1 class="auth-title">Sign in to your account</h1>
+                    <p class="auth-subtitle">
+                        Welcome back. Enter your staff credentials to access your recruitment pipeline.
+                    </p>
+                </div>
 
-                <form asp-action="Login" method="post">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="auth-alert-box" role="alert">
+                        <i class="fas fa-circle-exclamation"></i>
+                        <div class="auth-alert-text">
+                            <div asp-validation-summary="ModelOnly" class="m-0 p-0 list-unstyled"></div>
+                        </div>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post" id="loginPageForm" novalidate>
                     @if (ViewData["ReturnUrl"] != null)
                     {
                         <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
                     }
-                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-                    
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required />
-                    </div>
-                    
-                    <div class="form-group mb-4 position-relative">
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required />
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe" value="true" />
-                                <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
-                            </div>
-                            <a asp-action="ForgotPassword" class="text-decoration-none small text-muted">Forgot Password?</a>
+
+                    <div class="auth-field-group">
+                        <label for="email" class="auth-label">Work Email address</label>
+                        <div class="auth-input-wrapper">
+                            <i class="fas fa-envelope auth-input-icon" aria-hidden="true"></i>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="auth-input"
+                                placeholder="name@spacestem.com"
+                                required
+                                autocomplete="email"
+                                autofocus
+                            />
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-custom btn-primary-custom">
-                        Login Now
+                    <div class="auth-field-group">
+                        <div class="auth-field-label-row">
+                            <label for="password" class="auth-label">Password</label>
+                            <a asp-action="ForgotPassword" class="auth-forgot-link">Forgot password?</a>
+                        </div>
+                        <div class="auth-input-wrapper">
+                            <i class="fas fa-lock auth-input-icon" aria-hidden="true"></i>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="auth-input has-toggle"
+                                placeholder="Enter your password"
+                                required
+                                autocomplete="current-password"
+                            />
+                            <button
+                                type="button"
+                                class="password-toggle-btn"
+                                id="togglePasswordBtn"
+                                aria-label="Toggle password visibility"
+                                tabindex="-1"
+                            >
+                                <i class="fas fa-eye" id="togglePasswordIcon" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="auth-options-row">
+                        <label class="auth-checkbox-label" for="rememberMe">
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                                name="rememberMe"
+                                value="true"
+                            />
+                            <span>Remember me on this device</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn" id="submitLoginBtn">
+                        <span id="submitBtnText">
+                            Sign In to Portal <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
+                        </span>
+                        <span id="submitBtnSpinner" style="display: none;">
+                            <i class="fas fa-circle-notch fa-spin me-2" aria-hidden="true"></i> Authenticating...
+                        </span>
                     </button>
                 </form>
 
+                <div class="auth-footer-wrap">
+                    <div class="auth-security-badge">
+                        <i class="fas fa-shield-halved" aria-hidden="true"></i> Encrypted 256-bit SSL &bull; Role-governed session
+                    </div>
+                    <p class="auth-copyright">
+                        &copy; @DateTime.UtcNow.Year Space Stem. All rights reserved.
+                    </p>
+                </div>
+
             </div>
-        </div>
+        </main>
         
     </div>
 
+    <script>
+        (() => {
+            'use strict';
+
+            // Password Toggle
+            const toggleBtn = document.getElementById('togglePasswordBtn');
+            const pwdInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePasswordIcon');
+
+            if (toggleBtn && pwdInput && toggleIcon) {
+                toggleBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isPassword = pwdInput.type === 'password';
+                    pwdInput.type = isPassword ? 'text' : 'password';
+                    toggleIcon.classList.toggle('fa-eye', !isPassword);
+                    toggleIcon.classList.toggle('fa-eye-slash', isPassword);
+                    pwdInput.focus();
+                });
+            }
+
+            // Form Submit Loading State
+            const form = document.getElementById('loginPageForm');
+            const submitBtn = document.getElementById('submitLoginBtn');
+            const btnText = document.getElementById('submitBtnText');
+            const btnSpinner = document.getElementById('submitBtnSpinner');
+
+            if (form && submitBtn && btnText && btnSpinner) {
+                form.addEventListener('submit', (e) => {
+                    if (!form.checkValidity()) {
+                        return; // Let browser HTML5 validation show
+                    }
+
+                    submitBtn.disabled = true;
+                    btnText.style.display = 'none';
+                    btnSpinner.style.display = 'inline-flex';
+                });
+            }
+        })();
+    </script>
 </body>
 </html>

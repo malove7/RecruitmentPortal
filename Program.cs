@@ -83,6 +83,8 @@ builder.Services.Configure<RecruitmentPortal.Models.DTOs.PineconeOptions>(
     builder.Configuration.GetSection(RecruitmentPortal.Models.DTOs.PineconeOptions.SectionName));
 builder.Services.Configure<RecruitmentPortal.Models.DTOs.KnowledgeBaseOptions>(
     builder.Configuration.GetSection(RecruitmentPortal.Models.DTOs.KnowledgeBaseOptions.SectionName));
+builder.Services.Configure<RecruitmentPortal.Models.DTOs.HomepageChatOptions>(
+    builder.Configuration.GetSection(RecruitmentPortal.Models.DTOs.HomepageChatOptions.SectionName));
 
 // Knowledge Base & Document Services
 builder.Services.AddScoped<IDocumentTextExtractor, DocumentTextExtractor>();
@@ -91,9 +93,31 @@ builder.Services.AddHttpClient<IOpenAIEmbeddingService, OpenAIEmbeddingService>(
 builder.Services.AddHttpClient<IPineconeVectorService, PineconeVectorService>();
 builder.Services.AddScoped<IKnowledgeBaseIngestionService, KnowledgeBaseIngestionService>();
 builder.Services.AddHttpClient<IRagChatService, RagChatService>();
+builder.Services.AddHttpClient<IOpenAITranscriptionService, OpenAITranscriptionService>();
 
 builder.Services.AddScoped<IResumeParserService, ResumeParserService>();
 builder.Services.AddHttpClient<IAIResumeScreeningService, OpenAIResumeScreeningService>();
+
+// Rate Limiter Configuration
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("HomepageChatPolicy", httpContext =>
+        System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: partition => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync("{\"success\":false,\"errorMessage\":\"Too many requests. Please wait a moment before trying again.\",\"isFallback\":true}", token);
+    };
+});
 
 // Configure Permission-based Authorization
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -139,6 +163,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseRateLimiter();
 
 // Add Authentication before Authorization
 app.UseAuthentication();
