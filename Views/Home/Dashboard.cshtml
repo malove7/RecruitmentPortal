@@ -1,0 +1,146 @@
+@model RecruitmentPortal.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Welcome back, here's what's happening today.</p>
+    </div>
+    <div>
+        <a asp-controller="Candidates" asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Add Candidate
+        </a>
+    </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon primary">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-value">@Model.TotalCandidates</div>
+        <div class="stat-label">Total Candidates</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon success">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="stat-value">@Model.TotalOpenPositions</div>
+        <div class="stat-label">Open Positions</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon info">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-value">@Model.InterviewsScheduledToday</div>
+        <div class="stat-label">Interviews Today</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon warning">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="stat-value">@Model.PendingFeedbacks</div>
+        <div class="stat-label">Pending Feedback</div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Candidates -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="m-0">Recent Candidates</h6>
+                <a asp-controller="Candidates" asp-action="Index" class="text-sm text-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0">Name</th>
+                                <th class="border-top-0">Position</th>
+                                <th class="border-top-0">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var candidate in Model.RecentCandidates)
+                            {
+                                <tr>
+                                    <td class="font-weight-medium">@candidate.FirstName @candidate.LastName</td>
+                                    <td class="text-muted">@candidate.JobPosition?.Title</td>
+                                    <td>
+                                        @{
+                                            var statusClass = candidate.Status switch
+                                            {
+                                                RecruitmentPortal.Models.CandidateStatus.Applied => "badge-blue",
+                                                RecruitmentPortal.Models.CandidateStatus.InReview => "badge-info",
+                                                RecruitmentPortal.Models.CandidateStatus.InterviewScheduled => "badge-yellow",
+                                                RecruitmentPortal.Models.CandidateStatus.Offered => "badge-success",
+                                                RecruitmentPortal.Models.CandidateStatus.Hired => "badge-success",
+                                                RecruitmentPortal.Models.CandidateStatus.Rejected => "badge-red",
+                                                _ => "badge-gray"
+                                            };
+                                        }
+                                        <span class="badge @statusClass">@candidate.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.RecentCandidates.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-muted">No recent candidates found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Interviews -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="m-0">Upcoming Interviews</h6>
+                <a asp-controller="Interviews" asp-action="Index" class="text-sm text-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0">Time</th>
+                                <th class="border-top-0">Candidate</th>
+                                <th class="border-top-0">Interviewer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var interview in Model.UpcomingInterviews)
+                            {
+                                <tr>
+                                    <td class="font-weight-medium">@interview.ScheduledTime.ToString("MMM dd, HH:mm")</td>
+                                    <td>@interview.Candidate?.FirstName @interview.Candidate?.LastName</td>
+                                    <td class="text-muted">@interview.Interviewer?.FirstName @interview.Interviewer?.LastName</td>
+                                </tr>
+                            }
+                            @if (!Model.UpcomingInterviews.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-muted">No upcoming interviews.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

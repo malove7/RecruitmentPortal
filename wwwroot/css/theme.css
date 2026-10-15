@@ -222,7 +222,7 @@ label {
   font-weight: 500;
 }
 
-.badge-primary, .badge-blue { background-color: rgba(59, 130, 246, 0.1); color: var(--info-color); }
+.badge-primary, .badge-blue, .badge-info { background-color: rgba(59, 130, 246, 0.1); color: var(--info-color); }
 .badge-success, .badge-green { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
 .badge-warning, .badge-yellow { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
 .badge-danger, .badge-red { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
@@ -234,9 +234,15 @@ label {
 .shadow-sm { box-shadow: var(--shadow-sm) !important; }
 
 /* Main Content Area Adjustment */
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 .main-content {
     flex: 1;
+    min-height: 0;
     padding: var(--space-8);
     background-color: var(--bg-body);
-    min-height: 100vh;
+    overflow-y: auto;
 }

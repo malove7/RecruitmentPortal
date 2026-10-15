@@ -1,0 +1,60 @@
+@model RecruitmentPortal.Models.ViewModels.KnowledgeBaseCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Knowledge Base";
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 fw-bold text-dark mb-1">Create Knowledge Base</h1>
+                    <p class="text-muted mb-0">Set up a new collection for documents, guidelines, and policies.</p>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Back to List
+                </a>
+            </div>
+
+            <!-- Card Form -->
+            <div class="card shadow-sm border">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold text-dark">
+                        <i class="fas fa-database text-primary me-2"></i>Knowledge Base Information
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-semibold text-dark"></label> <span class="text-danger">*</span>
+                            <input asp-for="Name" class="form-control" placeholder="e.g. Engineering Hiring Guidelines, General HR Policies" autofocus />
+                            <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
+                            <div class="form-text text-muted">A clear, identifiable name for this knowledge base.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-semibold text-dark"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Briefly describe what documents will be included in this knowledge base and its purpose..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-1"></i> Create & Upload Documents
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

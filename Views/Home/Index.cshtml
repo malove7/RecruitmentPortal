@@ -1,146 +1,575 @@
-﻿@model RecruitmentPortal.Models.ViewModels.DashboardViewModel
-
 @{
-    ViewData["Title"] = "Dashboard";
+    Layout = null;
+    ViewData["Title"] = "Space Stem | AI HR and Recruitment Portal";
 }
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <meta
+      name="description"
+      content="An intelligent 3D command center for Space Stem's AI HR and recruitment portal."
+    />
 
-<div class="dashboard-header">
-    <div>
-        <h1 class="page-title">Dashboard</h1>
-        <p class="page-subtitle">Welcome back, here's what's happening today.</p>
-    </div>
-    <div>
-        <a asp-controller="Candidates" asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i> Add Candidate
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" asp-append-version="true" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/apple-touch-icon.png" asp-append-version="true" />
+    <link rel="manifest" href="~/site.webmanifest" />
+
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Preload & Styles -->
+    <link rel="preload" href="~/assets/spacestem-logo.png" as="image" />
+    <link rel="stylesheet" href="~/css/homepage.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/homepage-chat-widget.css" asp-append-version="true" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header" aria-label="Primary navigation">
+        <a class="brand" href="#home" aria-label="Space Stem home">
+          <img src="~/assets/spacestem-logo.png" alt="Space Stem" />
         </a>
-    </div>
-</div>
+        <nav class="main-nav" aria-label="Main menu">
+          <a href="#workflow">Workflow</a>
+          <a href="#features">AI Features</a>
+          <a href="#demo">Demo</a>
+          @if (User.Identity?.IsAuthenticated == true)
+          {
+            <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+          }
+        </nav>
 
-<!-- Stats Grid -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon primary">
-            <i class="fas fa-users"></i>
-        </div>
-        <div class="stat-value">@Model.TotalCandidates</div>
-        <div class="stat-label">Total Candidates</div>
-    </div>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+          <div class="header-user-actions">
+            <span class="user-greeting">Hi, @(User.FindFirst("FirstName")?.Value ?? User.Identity.Name)</span>
+            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline m-0">
+              <button type="submit" class="header-logout-btn" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
+            </form>
+          </div>
+        }
+        else
+        {
+          <a class="header-cta" href="/Auth/Login" id="headerLoginBtn">Login</a>
+        }
+      </header>
 
-    <div class="stat-card">
-        <div class="stat-icon success">
-            <i class="fas fa-briefcase"></i>
-        </div>
-        <div class="stat-value">@Model.TotalOpenPositions</div>
-        <div class="stat-label">Open Positions</div>
-    </div>
+      <main>
+        <section class="hero" id="home">
+          <canvas id="hero-3d" aria-label="Animated AI recruitment command center"></canvas>
+          <div class="scene-fallback" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
 
-    <div class="stat-card">
-        <div class="stat-icon info">
-            <i class="fas fa-calendar-check"></i>
-        </div>
-        <div class="stat-value">@Model.InterviewsScheduledToday</div>
-        <div class="stat-label">Interviews Today</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-icon warning">
-            <i class="fas fa-comment-dots"></i>
-        </div>
-        <div class="stat-value">@Model.PendingFeedbacks</div>
-        <div class="stat-label">Pending Feedback</div>
-    </div>
-</div>
-
-<div class="row">
-    <!-- Recent Candidates -->
-    <div class="col-lg-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="m-0">Recent Candidates</h6>
-                <a asp-controller="Candidates" asp-action="Index" class="text-sm text-primary">View All</a>
+          <div class="hero-content">
+            <p class="eyebrow">AI HR and recruitment portal</p>
+            <h1>Hire with intelligence that already understands your company.</h1>
+            <p class="hero-copy">
+              Space Stem turns resumes, role requirements, company knowledge, and interview data
+              into one guided recruitment workspace for faster, better-matched hiring.
+            </p>
+            <div class="hero-actions" aria-label="Homepage actions">
+              <a class="primary-action" href="#workflow">Explore workflow</a>
+              <a class="secondary-action" href="#features">View AI features</a>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="border-top-0">Name</th>
-                                <th class="border-top-0">Position</th>
-                                <th class="border-top-0">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var candidate in Model.RecentCandidates)
-                            {
-                                <tr>
-                                    <td class="font-weight-medium">@candidate.FirstName @candidate.LastName</td>
-                                    <td class="text-muted">@candidate.JobPosition?.Title</td>
-                                    <td>
-                                        @{
-                                            var statusClass = candidate.Status switch
-                                            {
-                                                RecruitmentPortal.Models.CandidateStatus.Applied => "badge-blue",
-                                                RecruitmentPortal.Models.CandidateStatus.InReview => "badge-info", // using badge-blue for applied, maybe info for review
-                                                RecruitmentPortal.Models.CandidateStatus.InterviewScheduled => "badge-yellow",
-                                                RecruitmentPortal.Models.CandidateStatus.Offered => "badge-success",
-                                                RecruitmentPortal.Models.CandidateStatus.Hired => "badge-success",
-                                                RecruitmentPortal.Models.CandidateStatus.Rejected => "badge-red",
-                                                _ => "badge-gray"
-                                            };
-                                        }
-                                        <span class="badge @statusClass">@candidate.Status</span>
-                                    </td>
-                                </tr>
-                            }
-                            @if (!Model.RecentCandidates.Any())
-                            {
-                                <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted">No recent candidates found.</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+            <dl class="proof-strip">
+              <div>
+                <dt>85%</dt>
+                <dd>less manual screening</dd>
+              </div>
+              <div>
+                <dt>4x</dt>
+                <dd>faster shortlist creation</dd>
+              </div>
+              <div>
+                <dt>24/7</dt>
+                <dd>company-aware assistant</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="feature-layer" id="features" aria-label="AI recruitment features">
+            <article class="feature-chip chip-resume">
+              <span class="chip-mark mark-blue" aria-hidden="true"></span>
+              <h2>AI resume scanning</h2>
+              <p>Extracts skills, experience, gaps, and fit signals from every applicant profile.</p>
+            </article>
+            <article class="feature-chip chip-knowledge">
+              <span class="chip-mark mark-green" aria-hidden="true"></span>
+              <h2>Company knowledgebase</h2>
+              <p>Answers hiring questions from policies, role briefs, benefits, and team context.</p>
+            </article>
+            <article class="feature-chip chip-match">
+              <span class="chip-mark mark-orange" aria-hidden="true"></span>
+              <h2>Smart talent matching</h2>
+              <p>Ranks candidates against role outcomes, culture needs, and must-have skills.</p>
+            </article>
+            <article class="feature-chip chip-interview">
+              <span class="chip-mark mark-coral" aria-hidden="true"></span>
+              <h2>Interview automation</h2>
+              <p>Creates scorecards, schedules rounds, and keeps hiring teams aligned.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="workflow-band" id="workflow" aria-label="Recruitment workflow">
+          <div class="workflow-inner">
+            <p class="section-kicker">Connected hiring flow</p>
+            <h2>From intake to final shortlist, the portal keeps the signal moving.</h2>
+            <div class="workflow-steps">
+              <article>
+                <span>01</span>
+                <h3>Upload role and resumes</h3>
+                <p>Collect candidate files, job descriptions, and team requirements in one place.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>Let AI score fit</h3>
+                <p>Surface ranked candidates with evidence-backed notes for each decision.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>Ask company context</h3>
+                <p>Use the knowledgebase to answer role, policy, and process questions instantly.</p>
+              </article>
             </div>
-        </div>
+          </div>
+        </section>
+
+        <section class="demo-band" id="demo" aria-label="Demo request">
+          <div>
+            <p class="section-kicker">Ready to streamline your recruitment?</p>
+            <h2>Designed as a drop-in hero for the Space Stem recruitment portal.</h2>
+          </div>
+          @if (User.Identity?.IsAuthenticated != true)
+          {
+            <a class="header-cta compact" href="/Auth/Login" id="demoLoginBtn">Login to Portal</a>
+          }
+        </section>
+      </main>
     </div>
 
-    <!-- Upcoming Interviews -->
-    <div class="col-lg-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="m-0">Upcoming Interviews</h6>
-                <a asp-controller="Interviews" asp-action="Index" class="text-sm text-primary">View All</a>
+    @if (User.Identity?.IsAuthenticated != true)
+    {
+      <!-- Interactive Login Modal -->
+      <div id="loginModal" class="login-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="login-modal-backdrop" id="modalBackdrop"></div>
+        <div class="login-modal-dialog">
+          <button type="button" class="login-modal-close" id="closeLoginModal" aria-label="Close modal">&times;</button>
+          
+          <div class="login-modal-header">
+            <img src="~/assets/spacestem-logo.png" alt="Space Stem" class="modal-logo" />
+            <h3 id="modalTitle">Welcome Back</h3>
+            <p>Enter your credentials to access the recruitment workspace</p>
+          </div>
+
+          <div id="loginModalAlert" class="modal-alert" style="display: none;" role="alert">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="loginAlertText"></span>
+          </div>
+
+          <form id="modalLoginForm" method="post" action="/Auth/Login">
+            @Html.AntiForgeryToken()
+            <div class="modal-form-group">
+              <label for="modalEmail">Email Address</label>
+              <div class="input-with-icon">
+                <input
+                  type="email"
+                  id="modalEmail"
+                  name="email"
+                  class="modal-input"
+                  placeholder="admin@recruitmentportal.com"
+                  required
+                  autocomplete="username"
+                />
+                <i class="fas fa-envelope input-icon"></i>
+              </div>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="border-top-0">Time</th>
-                                <th class="border-top-0">Candidate</th>
-                                <th class="border-top-0">Interviewer</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var interview in Model.UpcomingInterviews)
-                            {
-                                <tr>
-                                    <td class="font-weight-medium">@interview.ScheduledTime.ToString("MMM dd, HH:mm")</td>
-                                    <td>@interview.Candidate?.FirstName @interview.Candidate?.LastName</td>
-                                    <td class="text-muted">@interview.Interviewer?.FirstName @interview.Interviewer?.LastName</td>
-                                </tr>
-                            }
-                            @if (!Model.UpcomingInterviews.Any())
-                            {
-                                <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted">No upcoming interviews.</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+
+            <div class="modal-form-group">
+              <label for="modalPassword">Password</label>
+              <div class="input-with-icon">
+                <input
+                  type="password"
+                  id="modalPassword"
+                  name="password"
+                  class="modal-input"
+                  placeholder="••••••••"
+                  required
+                  autocomplete="current-password"
+                />
+                <button type="button" class="pwd-toggle" id="togglePasswordBtn" aria-label="Toggle password visibility">
+                  <i class="fas fa-eye" id="pwdToggleIcon"></i>
+                </button>
+              </div>
             </div>
+
+            <div class="modal-options">
+              <label class="remember-checkbox">
+                <input type="checkbox" id="modalRememberMe" name="rememberMe" value="true" />
+                <span>Remember me</span>
+              </label>
+              <a href="/Auth/ForgotPassword" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="modal-submit-btn" id="modalSubmitBtn">
+              <span id="modalSubmitText">Sign In to Portal</span>
+              <span id="modalSubmitSpinner" style="display: none;">
+                <i class="fas fa-circle-notch fa-spin"></i> Authenticating...
+              </span>
+            </button>
+          </form>
+
+          <div class="modal-footer">
+            <a href="/Auth/Login" class="full-login-link">
+              Need full-screen view? Open dedicated login page <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
         </div>
+      </div>
+    }
+
+    <!-- 3D Animation Scripts -->
+    <script src="~/vendor/three.min.js"></script>
+    <script src="~/js/homepage-3d.js"></script>
+
+    @if (User.Identity?.IsAuthenticated != true)
+    {
+      <script>
+        (() => {
+          const loginModal = document.getElementById('loginModal');
+          const closeBtn = document.getElementById('closeLoginModal');
+          const backdrop = document.getElementById('modalBackdrop');
+          const modalDialog = loginModal?.querySelector('.login-modal-dialog');
+          const emailInput = document.getElementById('modalEmail');
+          const pwdInput = document.getElementById('modalPassword');
+          const pwdToggleBtn = document.getElementById('togglePasswordBtn');
+          const pwdToggleIcon = document.getElementById('pwdToggleIcon');
+          const loginForm = document.getElementById('modalLoginForm');
+          const alertBox = document.getElementById('loginModalAlert');
+          const alertText = document.getElementById('loginAlertText');
+          const submitBtn = document.getElementById('modalSubmitBtn');
+          const submitText = document.getElementById('modalSubmitText');
+          const submitSpinner = document.getElementById('modalSubmitSpinner');
+
+          // Trigger buttons
+          const triggerBtns = [
+            document.getElementById('headerLoginBtn'),
+            document.getElementById('demoLoginBtn')
+          ].filter(Boolean);
+
+          const openModal = (e) => {
+            if (e) e.preventDefault();
+            if (!loginModal) return;
+            loginModal.classList.add('is-open');
+            loginModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => emailInput?.focus(), 150);
+          };
+
+          const closeModal = () => {
+            if (!loginModal) return;
+            loginModal.classList.remove('is-open');
+            loginModal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            hideAlert();
+          };
+
+          const showAlert = (message) => {
+            if (!alertBox || !alertText) return;
+            alertText.textContent = message;
+            alertBox.style.display = 'flex';
+            if (modalDialog) {
+              modalDialog.classList.remove('shake');
+              void modalDialog.offsetWidth; // Trigger reflow
+              modalDialog.classList.add('shake');
+            }
+          };
+
+          const hideAlert = () => {
+            if (!alertBox) return;
+            alertBox.style.display = 'none';
+          };
+
+          triggerBtns.forEach((btn) => btn.addEventListener('click', openModal));
+
+          closeBtn?.addEventListener('click', closeModal);
+          backdrop?.addEventListener('click', closeModal);
+
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && loginModal?.classList.contains('is-open')) {
+              closeModal();
+            }
+          });
+
+          // Password Visibility Toggle
+          pwdToggleBtn?.addEventListener('click', () => {
+            if (!pwdInput || !pwdToggleIcon) return;
+            const isPassword = pwdInput.type === 'password';
+            pwdInput.type = isPassword ? 'text' : 'password';
+            pwdToggleIcon.classList.toggle('fa-eye', !isPassword);
+            pwdToggleIcon.classList.toggle('fa-eye-slash', isPassword);
+          });
+
+          // AJAX Login Handler
+          loginForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const email = emailInput?.value.trim() || '';
+            const password = pwdInput?.value || '';
+            const rememberMe = document.getElementById('modalRememberMe')?.checked || false;
+            const token = loginForm.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+            if (!email || !password) {
+              showAlert('Please enter both email and password.');
+              return;
+            }
+
+            // Set loading state
+            if (submitBtn && submitText && submitSpinner) {
+              submitBtn.disabled = true;
+              submitText.style.display = 'none';
+              submitSpinner.style.display = 'inline-block';
+            }
+
+            try {
+              const formData = new FormData();
+              formData.append('email', email);
+              formData.append('password', password);
+              formData.append('rememberMe', rememberMe);
+              if (token) {
+                formData.append('__RequestVerificationToken', token);
+              }
+
+              const response = await fetch('/Auth/Login', {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+              });
+
+              if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                  submitSpinner.innerHTML = '<i class="fas fa-check"></i> Redirecting...';
+                  window.location.href = data.redirectUrl || '/Home/Dashboard';
+                  return;
+                } else {
+                  showAlert(data.message || 'Invalid login attempt. Please check your credentials.');
+                }
+              } else {
+                showAlert('Login failed. Please check your email and password.');
+              }
+            } catch (err) {
+              // Network error or unexpected response — fall back to standard form submission
+              console.warn('AJAX login failed, submitting form normally:', err);
+              loginForm.submit();
+              return;
+            } finally {
+              if (submitBtn && submitText && submitSpinner && submitSpinner.innerText.indexOf('Redirecting') === -1) {
+                submitBtn.disabled = false;
+                submitText.style.display = 'inline-block';
+                submitSpinner.style.display = 'none';
+              }
+            }
+          });
+        })();
+      </script>
+    }
+
+    <!-- Public Homepage Chat + Voice Assistant Widget -->
+    <div id="homepageChatWidgetWrapper">
+      <!-- Floating Launcher Button (Pill Design) -->
+      <button
+        type="button"
+        class="chat-widget-launcher"
+        id="chatWidgetLauncher"
+        aria-label="Chat with us"
+        aria-expanded="false"
+        aria-controls="chatWidgetPanel"
+      >
+        <span class="launcher-content launcher-content-closed">
+          <i class="fas fa-comment-dots launcher-icon" aria-hidden="true"></i>
+          <span class="launcher-label">Chat with us!</span>
+        </span>
+        <span class="launcher-content launcher-content-open" aria-hidden="true">
+          <i class="fas fa-times launcher-icon" aria-hidden="true"></i>
+          <span class="launcher-label">Close</span>
+        </span>
+        <span class="chat-launcher-badge" id="chatLauncherBadge" title="Ask a question"></span>
+      </button>
+
+      <!-- Chat Widget Panel -->
+      <aside
+        class="chat-widget-panel"
+        id="chatWidgetPanel"
+        role="complementary"
+        aria-label="Space Stem Recruitment Assistant"
+        aria-hidden="true"
+      >
+        <!-- Header -->
+        <header class="chat-widget-header">
+          <div class="chat-header-identity">
+            <div class="chat-bot-avatar">
+              <i class="fas fa-robot"></i>
+              <span class="online-status-dot" title="Online"></span>
+            </div>
+            <div class="chat-header-titles">
+              <span class="chat-header-title">Space Stem Assistant</span>
+              <span class="chat-header-subtitle">
+                <i class="fas fa-sparkles text-warning" style="font-size: 0.7rem;"></i> AI Recruitment &amp; Knowledge Base
+              </span>
+            </div>
+          </div>
+          <div class="chat-header-actions">
+            <button
+              type="button"
+              class="chat-header-btn"
+              id="chatResetBtn"
+              title="Start New Conversation"
+              aria-label="Start new conversation"
+            >
+              <i class="fas fa-rotate-right"></i>
+            </button>
+            <button
+              type="button"
+              class="chat-header-btn"
+              id="chatCloseBtn"
+              title="Close chat"
+              aria-label="Close assistant"
+            >
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Status Toast Banner -->
+        <div class="chat-status-toast" id="chatStatusToast" role="status">
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <span id="chatStatusToastText">Transcribing audio...</span>
+        </div>
+
+        <!-- Error Alert -->
+        <div class="chat-error-alert" id="chatErrorAlert" role="alert">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span id="chatErrorAlertText"></span>
+        </div>
+
+        <!-- Chat Stream Body -->
+        <div class="chat-widget-body" id="chatMessagesBody" role="log" aria-live="polite">
+          <!-- Initial Welcome Message -->
+          <div class="chat-message-row assistant" id="chatInitialWelcome">
+            <div class="chat-message-avatar">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="chat-message-content">
+              <div class="chat-bubble">
+                Hello! I am Space Stem's Recruitment Assistant. Ask me anything about our open roles, interview process, policies, or company culture.
+              </div>
+              <div class="chat-message-time">Just now</div>
+            </div>
+          </div>
+
+          <!-- Initial Suggestion Chips -->
+          <div class="chat-suggestion-chips" id="chatInitialChips">
+            <button type="button" class="chat-suggestion-chip" data-prompt="What roles are currently open at Space Stem?">
+              <span>What roles are currently open?</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="button" class="chat-suggestion-chip" data-prompt="What is the interview and hiring process?">
+              <span>What is the interview process?</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="button" class="chat-suggestion-chip" data-prompt="What benefits and work perks are offered?">
+              <span>What benefits are offered?</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer / Input Area -->
+        <footer class="chat-widget-footer">
+          <!-- Voice Recording Live Overlay -->
+          <div class="chat-voice-recording-overlay" id="chatVoiceOverlay" aria-live="assertive">
+            <div class="recording-status-box">
+              <span class="recording-pulsing-circle"></span>
+              <div class="recording-label-wrap">
+                <span class="recording-label-text">Listening...</span>
+                <span class="recording-timer-text" id="recordingTimerDisplay">0:00</span>
+              </div>
+            </div>
+            <div class="recording-controls">
+              <button
+                type="button"
+                class="recording-cancel-btn"
+                id="cancelRecordingBtn"
+                title="Cancel voice input"
+                aria-label="Cancel recording"
+              >
+                <i class="fas fa-trash-can"></i>
+              </button>
+              <button
+                type="button"
+                class="recording-stop-btn"
+                id="stopRecordingBtn"
+                title="Send voice question"
+                aria-label="Done recording"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Text Input Form -->
+          <form class="chat-input-form" id="chatInputForm" onsubmit="return false;">
+            <input
+              type="text"
+              class="chat-input-field"
+              id="chatInputField"
+              placeholder="Ask a question..."
+              maxlength="1000"
+              autocomplete="off"
+              aria-label="Ask a question"
+            />
+            <button
+              type="button"
+              class="chat-action-btn chat-mic-btn"
+              id="chatMicBtn"
+              title="Ask using voice"
+              aria-label="Speak your question"
+            >
+              <i class="fas fa-microphone"></i>
+            </button>
+            <button
+              type="submit"
+              class="chat-action-btn chat-send-btn"
+              id="chatSendBtn"
+              title="Send question"
+              aria-label="Send question"
+            >
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </footer>
+      </aside>
     </div>
-</div>
+
+    <!-- Homepage Chat Widget Script -->
+    <script src="~/js/homepage-chat-widget.js" asp-append-version="true"></script>
+  </body>
+</html>

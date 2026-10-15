@@ -1,0 +1,160 @@
+@model RecruitmentPortal.Models.ViewModels.KnowledgeBaseDetailsViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Name} - Details";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <h1 class="h3 fw-bold text-dark mb-0">@Model.Name</h1>
+                @if (Model.IsActive)
+                {
+                    <span class="badge badge-success"><i class="fas fa-check me-1"></i>Active</span>
+                }
+                else
+                {
+                    <span class="badge badge-secondary"><i class="fas fa-pause me-1"></i>Inactive</span>
+                }
+            </div>
+            <p class="text-muted mb-0">@(string.IsNullOrWhiteSpace(Model.Description) ? "No description provided." : Model.Description)</p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (User.HasClaim("Permission", "AskKnowledgeBases") || User.IsInRole("Admin"))
+            {
+                <a asp-controller="KnowledgeBaseChat" asp-action="Session" asp-route-knowledgeBaseId="@Model.Id" class="btn btn-outline-secondary">
+                    <i class="fas fa-comments me-1"></i> Chat with Knowledge Base
+                </a>
+            }
+            @if (User.HasClaim("Permission", "ManageKnowledgeBases") || User.IsInRole("Admin"))
+            {
+                <a asp-action="Documents" asp-route-id="@Model.Id" class="btn btn-primary">
+                    <i class="fas fa-file-upload me-1"></i> Manage Documents
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                    <i class="fas fa-edit me-1"></i> Edit
+                </a>
+            }
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card shadow-sm border h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase fw-semibold">Total Documents</div>
+                    <div class="fs-4 fw-bold text-dark mt-1">@Model.Documents.Count</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card shadow-sm border h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase fw-semibold">Indexed in Pinecone</div>
+                    <div class="fs-4 fw-bold text-success mt-1">@Model.IndexedCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card shadow-sm border h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase fw-semibold">Vector Chunks</div>
+                    <div class="fs-4 fw-bold text-dark mt-1">@Model.TotalChunks</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card shadow-sm border h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase fw-semibold">Created By</div>
+                    <div class="fs-6 fw-bold text-dark mt-1">@Model.CreatedByName</div>
+                    <div class="small text-muted">@Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents List -->
+    <div class="card shadow-sm border">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-semibold text-dark">
+                <i class="fas fa-file-alt text-primary me-2"></i>Documents (@Model.Documents.Count)
+            </h5>
+            @if (User.HasClaim("Permission", "ManageKnowledgeBases") || User.IsInRole("Admin"))
+            {
+                <a asp-action="Documents" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus me-1"></i> Add Documents
+                </a>
+            }
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>File Name</th>
+                        <th>Size</th>
+                        <th>Status</th>
+                        <th>Chunks</th>
+                        <th>Uploaded</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Documents.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                No documents have been uploaded to this knowledge base yet.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var doc in Model.Documents)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas @(doc.FileExtension == ".pdf" ? "fa-file-pdf text-danger" : "fa-file-word text-primary") fa-lg me-2"></i>
+                                        <span class="fw-semibold text-dark">@doc.FileName</span>
+                                    </div>
+                                </td>
+                                <td><span class="text-muted small">@doc.FormattedFileSize</span></td>
+                                <td>
+                                    @switch (doc.Status)
+                                    {
+                                        case RecruitmentPortal.Models.Enums.KnowledgeBaseDocumentStatus.Indexed:
+                                            <span class="badge badge-success"><i class="fas fa-check-circle me-1"></i>Indexed</span>
+                                            break;
+                                        case RecruitmentPortal.Models.Enums.KnowledgeBaseDocumentStatus.Indexing:
+                                            <span class="badge badge-warning"><i class="fas fa-spinner fa-spin me-1"></i>Indexing</span>
+                                            break;
+                                        case RecruitmentPortal.Models.Enums.KnowledgeBaseDocumentStatus.Parsing:
+                                            <span class="badge badge-warning"><i class="fas fa-spinner fa-spin me-1"></i>Parsing</span>
+                                            break;
+                                        case RecruitmentPortal.Models.Enums.KnowledgeBaseDocumentStatus.Parsed:
+                                            <span class="badge badge-info"><i class="fas fa-file-code me-1"></i>Parsed</span>
+                                            break;
+                                        case RecruitmentPortal.Models.Enums.KnowledgeBaseDocumentStatus.Uploaded:
+                                            <span class="badge badge-info"><i class="fas fa-cloud-upload-alt me-1"></i>Uploaded</span>
+                                            break;
+                                        case RecruitmentPortal.Models.Enums.KnowledgeBaseDocumentStatus.Failed:
+                                            <span class="badge badge-danger" title="@doc.ErrorMessage"><i class="fas fa-exclamation-triangle me-1"></i>Failed</span>
+                                            break;
+                                    }
+                                </td>
+                                <td><span class="fw-semibold">@doc.ChunkCount</span></td>
+                                <td><span class="text-muted small">@doc.UploadedAt.ToLocalTime().ToString("MMM dd, yyyy HH:mm")</span></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

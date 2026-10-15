@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+    <linearGradient id="topFace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="leftFace" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e0e7ff"/>
+      <stop offset="100%" stop-color="#c7d2fe"/>
+    </linearGradient>
+    <linearGradient id="rightFace" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c7d2fe"/>
+      <stop offset="100%" stop-color="#a5b4fc"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="2.5" y="2.5" width="123" height="123" rx="28" fill="url(#bgGrad)" stroke="rgba(255,255,255,0.28)" stroke-width="2.5"/>
+
+  <!-- Isometric Cube Faces -->
+  <!-- Top Face -->
+  <polygon points="64,28.5 98,48 64,67.5 30,48" fill="url(#topFace)"/>
+
+  <!-- Left Face -->
+  <polygon points="30,52 62,70 62,106 30,88" fill="url(#leftFace)"/>
+
+  <!-- Right Face -->
+  <polygon points="66,70 98,52 98,88 66,106" fill="url(#rightFace)"/>
+
+  <!-- Center Portal Aperture / Notch -->
+  <polygon points="64,36.5 75.5,48 64,56 52.5,48" fill="#4f46e5"/>
+
+  <!-- Central Spark / Core -->
+  <polygon points="64,45 68,48 64,51 60,48" fill="#ffffff" opacity="0.95"/>
+</svg>

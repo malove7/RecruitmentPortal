@@ -1,0 +1,47 @@
+@model RecruitmentPortal.Models.ViewModels.FeedbackSuccessViewModel
+@{
+    ViewData["Title"] = "Feedback Submitted Successfully";
+    Layout = "_PublicLayout";
+}
+
+<div class="form-header-card">
+    <div class="form-brand">SPACESTEM</div>
+    <h1>Interviewer Candidate Evaluation</h1>
+</div>
+
+<div class="section-card text-center py-5" style="border-radius:0 0 12px 12px;">
+    <div style="font-size:4rem;color:#10b981;margin-bottom:1.5rem;">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h2 class="fw-bold mb-2 text-dark">Feedback Submitted Successfully</h2>
+    <p class="text-muted mb-4 fs-6">
+        Thank you for completing your evaluation. Your @(Model.FeedbackType == "Candidate" ? "" : Model.FeedbackType.ToLower() + " ")feedback has been saved.
+    </p>
+
+    <div class="card bg-light border p-4 mb-4 text-start mx-auto" style="max-width: 500px; border-radius: 8px;">
+        <div class="row mb-2">
+            <div class="col-sm-5 text-muted small fw-semibold text-uppercase">Candidate</div>
+            <div class="col-sm-7 fw-bold text-dark">@Model.CandidateFullName</div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-5 text-muted small fw-semibold text-uppercase">Position</div>
+            <div class="col-sm-7 fw-semibold text-dark">@Model.PositionAppliedFor</div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-5 text-muted small fw-semibold text-uppercase">Evaluation Type</div>
+            <div class="col-sm-7">
+                <span class="badge @(Model.FeedbackType == "Technical" ? "bg-primary" : "bg-info") text-white">
+                    @(Model.FeedbackType) Feedback
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 text-muted small fw-semibold text-uppercase">Submitted At</div>
+            <div class="col-sm-7 text-muted small">@Model.SubmittedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</div>
+        </div>
+    </div>
+
+    <p class="text-secondary small mb-0">
+        You may now safely close this browser window.
+    </p>
+</div>

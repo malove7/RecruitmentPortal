@@ -16,6 +16,13 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="RecruitmentPortal.Tests\**\*.cs" />
+    <Content Remove="RecruitmentPortal.Tests\**\*" />
+    <None Remove="RecruitmentPortal.Tests\**\*" />
   </ItemGroup>
 
 </Project>

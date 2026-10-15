@@ -1,0 +1,75 @@
+@model RecruitmentPortal.Models.ViewModels.KnowledgeBaseEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Knowledge Base";
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 fw-bold text-dark mb-1">Edit Knowledge Base</h1>
+                    <p class="text-muted mb-0">Update name, description, or activation status.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Documents" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                        <i class="fas fa-file-upload me-1"></i> Manage Documents
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to List
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card Form -->
+            <div class="card shadow-sm border">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold text-dark">
+                        <i class="fas fa-edit text-primary me-2"></i>Edit Details
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-semibold text-dark"></label> <span class="text-danger">*</span>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-semibold text-dark"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveSwitch" />
+                                <label class="form-check-label fw-semibold text-dark" for="isActiveSwitch">
+                                    Active for RAG chatbot queries
+                                </label>
+                            </div>
+                            <div class="form-text text-muted">When inactive, this knowledge base will not appear in the chatbot selection list.</div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,76 @@
+@model RecruitmentPortal.Models.ViewModels.KnowledgeBaseChatViewModel
+
+@{
+    ViewData["Title"] = "Knowledge Base Chat";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">Knowledge Base Assistant</h1>
+            <p class="text-muted mb-0">Ask questions grounded in company recruitment policies, candidate guidelines, and organizational documentation.</p>
+        </div>
+        @if (User.HasClaim("Permission", "ViewKnowledgeBases") || User.IsInRole("Admin"))
+        {
+            <a asp-controller="KnowledgeBases" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-database me-1"></i> Manage Knowledge Bases
+            </a>
+        }
+    </div>
+
+    @if (ViewBag.NoActiveKb == true || Model.AvailableKnowledgeBases.Count == 0)
+    {
+        <div class="card shadow-sm border py-5 text-center">
+            <div class="card-body">
+                <i class="fas fa-book-reader fa-3x text-secondary opacity-50 mb-3"></i>
+                <h5 class="fw-bold text-dark mb-2">No Active Knowledge Bases Found</h5>
+                <p class="text-muted mb-3" style="max-width: 500px; margin: 0 auto;">
+                    To use the chatbot assistant, an Admin or HR user must first create a knowledge base and ingest documents.
+                </p>
+                @if (User.HasClaim("Permission", "ManageKnowledgeBases") || User.IsInRole("Admin"))
+                {
+                    <a asp-controller="KnowledgeBases" asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i> Create Knowledge Base
+                    </a>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="mb-3">
+            <h5 class="fw-semibold text-dark">Select a Knowledge Base to Begin</h5>
+            <p class="text-muted small">Choose the domain or policy repository you would like the AI assistant to retrieve answers from.</p>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var kb in Model.AvailableKnowledgeBases)
+            {
+                <div class="col-md-6 col-xl-4">
+                    <div class="card shadow-sm border h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <h5 class="card-title fw-bold text-dark mb-0">@kb.Name</h5>
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle me-1"></i>@kb.IndexedDocumentCount indexed
+                                </span>
+                            </div>
+                            <p class="text-muted small flex-grow-1">
+                                @(string.IsNullOrWhiteSpace(kb.Description) ? "No description provided." : kb.Description)
+                            </p>
+                            <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">
+                                    <i class="fas fa-file-alt me-1"></i>@kb.DocumentCount documents
+                                </span>
+                                <a asp-action="Session" asp-route-knowledgeBaseId="@kb.Id" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-comments me-1"></i> Start Chat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

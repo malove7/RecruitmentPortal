@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-09T08:22:00Z",
+  "title": "Design System: Recruitment Portal",
+  "extensions": {
+    "colorMeta": {
+      "indigo-primary": { "role": "primary", "displayName": "Indigo Primary", "canonical": "#6366f1", "tonalRamp": ["#1e1b4b", "#312e81", "#3730a3", "#4338ca", "#4f46e5", "#6366f1", "#818cf8", "#c7d2fe"] },
+      "gradient-violet-start": { "role": "primary", "displayName": "Gradient Violet Start", "canonical": "#7c3aed", "tonalRamp": ["#2e1065", "#4c1d95", "#5b21b6", "#6d28d9", "#7c3aed", "#a78bfa", "#c4b5fd", "#ede9fe"] },
+      "slate-secondary": { "role": "secondary", "displayName": "Slate Secondary", "canonical": "#64748b", "tonalRamp": ["#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9"] },
+      "emerald-success": { "role": "status", "displayName": "Emerald Success", "canonical": "#10b981", "tonalRamp": ["#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#d1fae5"] },
+      "amber-warning": { "role": "status", "displayName": "Amber Warning", "canonical": "#f59e0b", "tonalRamp": ["#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fcd34d", "#fef3c7"] },
+      "red-danger": { "role": "status", "displayName": "Red Danger", "canonical": "#ef4444", "tonalRamp": ["#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fee2e2"] },
+      "sky-info": { "role": "status", "displayName": "Sky Info", "canonical": "#3b82f6", "tonalRamp": ["#1e3a8a", "#1e40af", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#dbeafe"] },
+      "paper-bg": { "role": "neutral", "displayName": "Paper", "canonical": "#f8fafc", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f8fafc"] },
+      "card-bg": { "role": "neutral", "displayName": "Card White", "canonical": "#ffffff", "tonalRamp": ["#e2e8f0", "#eef2f6", "#f1f5f9", "#f4f7fa", "#f8fafc", "#fafbfc", "#fdfdfe", "#ffffff"] },
+      "charcoal-sidebar": { "role": "neutral", "displayName": "Charcoal Sidebar", "canonical": "#111827", "tonalRamp": ["#030712", "#111827", "#1f2937", "#374151", "#4b5563", "#6b7280", "#9ca3af", "#d1d5db"] },
+      "ink-primary": { "role": "neutral", "displayName": "Ink Primary", "canonical": "#111827", "tonalRamp": ["#030712", "#111827", "#1f2937", "#374151", "#4b5563", "#6b7280", "#9ca3af", "#d1d5db"] },
+      "ink-secondary": { "role": "neutral", "displayName": "Ink Secondary", "canonical": "#6b7280", "tonalRamp": ["#1f2937", "#374151", "#4b5563", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb", "#f3f4f6"] },
+      "border-neutral": { "role": "neutral", "displayName": "Border Neutral", "canonical": "#e5e7eb", "tonalRamp": ["#4b5563", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb", "#eceef1", "#f3f4f6", "#f9fafb"] }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Headline", "purpose": "Page titles, h1." },
+      "title": { "displayName": "Title", "purpose": "Section headers, h3, card headers." },
+      "body": { "displayName": "Body", "purpose": "Default UI text, tables, forms — the base size app-wide." },
+      "label": { "displayName": "Label", "purpose": "Table column headers, badges." }
+    },
+    "shadows": [
+      { "name": "shadow-sm", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Resting state for cards, table containers, buttons." },
+      { "name": "shadow-md", "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "purpose": "Hover state for cards and stat tiles." },
+      { "name": "shadow-lg", "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "purpose": "Mobile sidebar overlay, floating toggle button." }
+    ],
+    "motion": [
+      { "name": "transition-fast", "value": "0.2s ease", "purpose": "Default transition for hover/focus state changes across buttons, cards, nav, inputs." }
+    ],
+    "breakpoints": [
+      { "name": "tablet", "value": "992px" },
+      { "name": "mobile", "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main call-to-action button — save, submit, create.",
+      "html": "<button class=\"ds-btn-primary\">Save Candidate</button>",
+      "css": ".ds-btn-primary { background: linear-gradient(135deg, #7c3aed, #6366f1); color: #ffffff; font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; border: none; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: all 0.2s ease; } .ds-btn-primary:hover { background: linear-gradient(135deg, #4f46e5, #6366f1); transform: scale(1.02); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary/cancel action button.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { background: #ffffff; color: #111827; font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #e5e7eb; transition: all 0.2s ease; } .ds-btn-secondary:hover { background: #f8fafc; border-color: #64748b; } .ds-btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }"
+    },
+    {
+      "name": "Stat Tile",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Dashboard KPI tile — icon, value, label.",
+      "html": "<div class=\"ds-stat-card\"><div class=\"ds-stat-icon\">&#128101;</div><div class=\"ds-stat-value\">128</div><div class=\"ds-stat-label\">Active Candidates</div></div>",
+      "css": ".ds-stat-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; display: flex; flex-direction: column; } .ds-stat-card:hover { transform: translateY(-4px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border-color: rgba(99,102,241,0.3); } .ds-stat-icon { width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; background: rgba(99,102,241,0.1); color: #6366f1; } .ds-stat-value { font-size: 2rem; font-weight: 700; color: #111827; line-height: 1.2; margin-bottom: 4px; } .ds-stat-label { color: #6b7280; font-size: 0.875rem; font-weight: 500; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-success",
+      "description": "Status/stage indicator — always color + label together.",
+      "html": "<span class=\"ds-badge ds-badge-success\">Hired</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; } .ds-badge-success { background-color: rgba(16, 185, 129, 0.1); color: #10b981; } .ds-badge-warning { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; } .ds-badge-danger { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }"
+    },
+    {
+      "name": "Sidebar Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Sidebar navigation item, default and active states.",
+      "html": "<a class=\"ds-nav-link ds-nav-link-active\">Candidates</a>",
+      "css": ".ds-nav-link { display: flex; align-items: center; padding: 0.75rem 1rem; color: #9ca3af; border-radius: 8px; font-weight: 500; transition: all 0.2s ease; } .ds-nav-link:hover { color: #ffffff; background-color: rgba(255,255,255,0.05); } .ds-nav-link-active { color: #ffffff; background: linear-gradient(90deg, rgba(99,102,241,0.2), rgba(99,102,241,0.05)); border-left: 3px solid #6366f1; padding-left: calc(1rem - 3px); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Form field, default and focus states.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Candidate name\" />",
+      "css": ".ds-input { border-radius: 8px; border: 1px solid #e5e7eb; padding: 0.625rem 0.75rem; font-size: 0.875rem; transition: border-color 0.2s ease, box-shadow 0.2s ease; } .ds-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); outline: none; }"
+    },
+    {
+      "name": "Avatar",
+      "kind": "custom",
+      "refersTo": "avatar",
+      "description": "Initials circle leading a candidate/user name — currently authored inline in Views/Candidates/Index.cshtml; promote to this reusable class.",
+      "html": "<div class=\"ds-avatar\">JD</div>",
+      "css": ".ds-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8125rem; background-color: rgba(99, 102, 241, 0.1); color: #6366f1; }"
+    },
+    {
+      "name": "Empty State Row",
+      "kind": "custom",
+      "refersTo": "empty-state",
+      "description": "Centered muted message inside an empty table body, e.g. \"No recent candidates found.\" on the dashboard panels.",
+      "html": "<tr><td colspan=\"3\" class=\"ds-empty-row\">No recent candidates found.</td></tr>",
+      "css": ".ds-empty-row { text-align: center; padding: 32px 16px; color: #6b7280; font-size: 0.875rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Ops Desk",
+    "overview": "No metaphor beyond what it is: well-organized internal tooling for running a recruitment pipeline. A dark charcoal sidebar anchors the shell; the working surface stays a plain, near-white paper so tables and forms stay the loudest thing on screen. One indigo-to-violet gradient carries all primary action and selection state — it never spreads past buttons, active nav, and stat-icon accents. Status is color-coded but never color-only: every badge pairs a hue with a text label. Cards lift 2-4px on hover as the only real motion in the system; everything else is instant. This system explicitly rejects bloated enterprise SaaS (dense nested menus, modal-on-modal workflows, Salesforce/SAP-style overload) and the generic AI-template look (gradient text, glassmorphism, cream/tan backgrounds, identical icon-card grids, uppercase-eyebrow section scaffolding). The existing indigo-on-charcoal identity is the anchor; new screens extend it, they don't reinvent it.",
+    "keyCharacteristics": [
+      "Flat near-white working surface, charcoal sidebar shell",
+      "One accent gradient (violet → indigo), used sparingly: buttons, active nav, stat icons",
+      "Status badges: tinted background + saturated text, never color alone",
+      "Subtle shadow-and-lift on hover; flat at rest",
+      "14px body base, dense but breathing (24-32px section gaps)"
+    ],
+    "rules": [
+      { "name": "The One Gradient Rule", "body": "The violet→indigo gradient exists in exactly one place at a time: the primary button and the active-nav accent glow. It never appears on text, headings, or section backgrounds.", "section": "colors" },
+      { "name": "The Label-Plus-Color Rule", "body": "Every status indicator pairs its color with a text label. Color alone never carries meaning.", "section": "colors" },
+      { "name": "The 14px Base Rule", "body": "Body text is 14px, not 16px — dense operational tooling read at a desk, not long-form reading content.", "section": "typography" },
+      { "name": "The Hover-Only Rule", "body": "Shadow growth and lift are a response to hover, never a resting decoration.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep the primary gradient confined to .btn-primary and the active-nav wash — one accent, used sparingly, per the One Gradient Rule.",
+      "Do pair every status color with a text label (badges, not color dots) per the Label-Plus-Color Rule.",
+      "Do reuse the existing card / table / badge / button system for new screens rather than inventing new patterns per feature.",
+      "Do keep shadows as a hover-only response (Hover-Only Rule); flat at rest everywhere else.",
+      "Do hide role-gated nav items and actions outright for users without permission, rather than showing them disabled with an explanation."
+    ],
+    "donts": [
+      "Don't ship bloated enterprise SaaS patterns: no dense nested menus, no modal-on-modal workflows, no Salesforce/SAP-style information overload.",
+      "Don't reach for the generic AI-template look: no gradient text, no glassmorphism, no cream/tan/sand backgrounds, no identical icon-card grids, no uppercase-tracked eyebrows scaffolding every section.",
+      "Don't add a second gradient, a second dark surface, or a second display font — the palette is deliberately narrow.",
+      "Don't use border-left/border-right as a decorative accent on cards, alerts, or list items. The sidebar's active-nav border is the one sanctioned exception, not a precedent for callouts or cards elsewhere.",
+      "Don't signal status with color alone — always add the text label.",
+      "Don't inflate the 14px body base chasing generic \"readability\" — this is dense operational tooling, not long-form content.",
+      "Don't reference a badge/icon color variant (badge-info, stat-icon.info, etc.) that isn't defined in theme.css/dashboard.css. Two real instances exist today and both render unstyled — define the variant first, or reuse an existing one."
+    ]
+  }
+}

@@ -1,0 +1,224 @@
+@model RecruitmentPortal.Models.ViewModels.InterviewerFeedbackViewModel
+@{
+    ViewData["Title"] = "Interviewer Feedback";
+    Layout = "_PublicLayout";
+}
+
+<div class="form-header-card">
+    <div class="form-brand">SPACESTEM</div>
+    <h1>Interviewer Candidate Evaluation</h1>
+    <p>Please review the candidate's details and submit your feedback.</p>
+</div>
+
+@if (!Model.IsValid)
+{
+    <div class="section-card text-center py-5" style="border-radius:0 0 12px 12px;">
+        <div style="font-size:3.5rem;color:#ef4444;margin-bottom:1rem;">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h2 class="fw-bold mb-3 text-dark">Feedback Link Unavailable</h2>
+        <p class="text-muted mb-4 fs-6" style="max-width:560px;margin-left:auto;margin-right:auto;">
+            @(string.IsNullOrWhiteSpace(Model.ErrorMessage) 
+                ? "This feedback link is invalid or is no longer available." 
+                : Model.ErrorMessage)
+        </p>
+        <p class="text-secondary small">
+            If you need to submit evaluation notes for this candidate, please contact the recruitment coordinator to request an active link.
+        </p>
+    </div>
+}
+else
+{
+    <!-- Candidate Details Card (Only the requested fields) -->
+    <div class="section-card">
+        <div class="section-title">
+            <i class="fas fa-user-check me-2"></i>Candidate Details
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="text-muted small fw-semibold text-uppercase">Full Name</div>
+                <div class="fw-bold fs-6 text-dark mt-1">@Model.CandidateFullName</div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small fw-semibold text-uppercase">Email Address</div>
+                <div class="fw-semibold fs-6 text-dark mt-1">@Model.CandidateEmail</div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-muted small fw-semibold text-uppercase">Position Applied For</div>
+                <div class="fw-semibold fs-6 text-primary mt-1">@Model.PositionAppliedFor</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Submission Card -->
+    <div class="section-card" style="border-radius:0 0 12px 12px;">
+        <form asp-action="Feedback" method="post" id="interviewerFeedbackForm" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Token" />
+            <input type="hidden" asp-for="FormId" />
+            <input type="hidden" asp-for="CandidateFullName" />
+            <input type="hidden" asp-for="CandidateEmail" />
+            <input type="hidden" asp-for="PositionAppliedFor" />
+            <input type="hidden" asp-for="IsTypePreSelected" />
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 px-3 mb-3 small"></div>
+
+            @if (Model.IsTypePreSelected)
+            {
+                <input type="hidden" asp-for="SelectedFeedbackType" id="selectedFeedbackTypeInput" />
+                <div class="section-title d-flex justify-content-between align-items-center">
+                    <span>
+                        <i class="fas @(Model.SelectedFeedbackType == "Technical" ? "fa-code" : "fa-clipboard-check") me-2"></i>
+                        @(Model.SelectedFeedbackType == "Technical" ? "Technical Feedback" : "Practical Feedback")
+                    </span>
+                    <span class="badge @(Model.SelectedFeedbackType == "Technical" ? "bg-primary" : "bg-info") text-white fw-normal px-3 py-1">
+                        @(Model.SelectedFeedbackType == "Technical" ? "Technical Evaluation" : "Practical Evaluation")
+                    </span>
+                </div>
+            }
+            else
+            {
+                <div class="section-title">
+                    <i class="fas fa-layer-group me-2"></i>Feedback Type Selection
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Please select the feedback type to continue <span class="required-star">*</span></label>
+                    <div class="row g-3 mt-1" id="feedbackTypeSelector">
+                        <div class="col-sm-6">
+                            <div class="p-3 border rounded-3 feedback-type-card cursor-pointer @(Model.SelectedFeedbackType == "Technical" ? "border-primary bg-light" : "")"
+                                 data-type="Technical" style="cursor: pointer; transition: all 0.2s;">
+                                <div class="form-check m-0 pointer-events-none">
+                                    <input class="form-check-input" type="radio" name="SelectedFeedbackType" id="typeTechnical" value="Technical" @(Model.SelectedFeedbackType == "Technical" ? "checked" : "") required />
+                                    <label class="form-check-label fw-semibold text-dark" for="typeTechnical">
+                                        <i class="fas fa-laptop-code text-primary me-2"></i>Technical Feedback
+                                    </label>
+                                </div>
+                                <p class="text-muted small mb-0 mt-2 ms-4">Evaluate coding skills, architecture, problem solving, and technical depth.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 border rounded-3 feedback-type-card cursor-pointer @(Model.SelectedFeedbackType == "Practical" ? "border-primary bg-light" : "")"
+                                 data-type="Practical" style="cursor: pointer; transition: all 0.2s;">
+                                <div class="form-check m-0 pointer-events-none">
+                                    <input class="form-check-input" type="radio" name="SelectedFeedbackType" id="typePractical" value="Practical" @(Model.SelectedFeedbackType == "Practical" ? "checked" : "") required />
+                                    <label class="form-check-label fw-semibold text-dark" for="typePractical">
+                                        <i class="fas fa-tasks text-info me-2"></i>Practical Feedback
+                                    </label>
+                                </div>
+                                <p class="text-muted small mb-0 mt-2 ms-4">Evaluate practical tasks, case studies, hands-on tests, and execution.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="SelectedFeedbackType" class="text-danger small mt-1 d-block"></span>
+                </div>
+            }
+
+            <!-- Form Fields Container -->
+            <div id="formFieldsContainer" style="@(Model.IsTypePreSelected || !string.IsNullOrEmpty(Model.SelectedFeedbackType) ? "" : "display: none;")">
+                <div class="sub-section-title" id="formFieldsHeader">
+                    @(Model.SelectedFeedbackType == "Practical" ? "Practical Evaluation Details" : "Technical Evaluation Details")
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ReviewerSignature" class="form-label" id="reviewerNameLabel">
+                        @(Model.SelectedFeedbackType == "Technical" ? "Technical Reviewer / Interviewer Name" : "Interviewer Name") <span class="required-star">*</span>
+                    </label>
+                    <input asp-for="ReviewerSignature" class="form-control" placeholder="Enter your full name or digital signature" required maxlength="150" />
+                    <span asp-validation-for="ReviewerSignature" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Comments" class="form-label" id="commentsLabel">
+                        @(Model.SelectedFeedbackType == "Practical" ? "Practical Feedback & Observations" : "Technical Feedback & Comments") <span class="required-star">*</span>
+                    </label>
+                    <textarea asp-for="Comments" class="form-control" rows="6"
+                              placeholder="@(Model.SelectedFeedbackType == "Practical" ? "Enter practical task observations, problem-solving execution, code/task review, and practical recommendations..." : "Enter technical evaluation notes, code quality assessment, strengths, weaknesses, and recommendation...")"
+                              required maxlength="1000"></textarea>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <span asp-validation-for="Comments" class="text-danger small"></span>
+                        <span class="text-muted small" id="commentsCharCount">Max 1000 characters</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2">
+                    <button type="submit" class="btn btn-submit w-100" id="btnSubmitFeedback">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Feedback
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('interviewerFeedbackForm');
+            if (!form) return;
+
+            const isPreSelected = '@Model.IsTypePreSelected'.toLowerCase() === 'true';
+            const cards = document.querySelectorAll('.feedback-type-card');
+            const formContainer = document.getElementById('formFieldsContainer');
+            const formHeader = document.getElementById('formFieldsHeader');
+            const reviewerLabel = document.getElementById('reviewerNameLabel');
+            const commentsLabel = document.getElementById('commentsLabel');
+            const commentsTextarea = document.querySelector('textarea[name="Comments"]');
+            const commentsCharCount = document.getElementById('commentsCharCount');
+
+            function updateTypeDisplay(type) {
+                if (formContainer) formContainer.style.display = 'block';
+
+                if (type === 'Practical') {
+                    if (formHeader) formHeader.textContent = 'Practical Evaluation Details';
+                    if (reviewerLabel) reviewerLabel.innerHTML = 'Interviewer Name <span class="required-star">*</span>';
+                    if (commentsLabel) commentsLabel.innerHTML = 'Practical Feedback &amp; Observations <span class="required-star">*</span>';
+                    if (commentsTextarea) commentsTextarea.placeholder = 'Enter practical task observations, problem-solving execution, hands-on tests, and practical recommendations...';
+                } else {
+                    if (formHeader) formHeader.textContent = 'Technical Evaluation Details';
+                    if (reviewerLabel) reviewerLabel.innerHTML = 'Technical Reviewer / Interviewer Name <span class="required-star">*</span>';
+                    if (commentsLabel) commentsLabel.innerHTML = 'Technical Feedback &amp; Comments <span class="required-star">*</span>';
+                    if (commentsTextarea) commentsTextarea.placeholder = 'Enter technical evaluation notes, problem-solving assessment, strengths, weaknesses, and recommendation...';
+                }
+            }
+
+            if (!isPreSelected && cards.length > 0) {
+                cards.forEach(card => {
+                    card.addEventListener('click', function () {
+                        const type = this.getAttribute('data-type');
+                        const radio = this.querySelector('input[type="radio"]');
+                        if (radio) radio.checked = true;
+
+                        cards.forEach(c => {
+                            c.classList.remove('border-primary', 'bg-light');
+                        });
+                        this.classList.add('border-primary', 'bg-light');
+
+                        updateTypeDisplay(type);
+                    });
+                });
+            }
+
+            if (commentsTextarea && commentsCharCount) {
+                const updateCount = () => {
+                    const remaining = 1000 - commentsTextarea.value.length;
+                    commentsCharCount.textContent = remaining + ' characters remaining';
+                };
+                commentsTextarea.addEventListener('input', updateCount);
+                updateCount();
+            }
+
+            form.addEventListener('submit', function (e) {
+                if (!isPreSelected) {
+                    const selected = form.querySelector('input[name="SelectedFeedbackType"]:checked');
+                    if (!selected) {
+                        e.preventDefault();
+                        alert('Please select a Feedback Type (Technical or Practical) before submitting.');
+                        return;
+                    }
+                }
+            });
+        });
+    </script>
+}

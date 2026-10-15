@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecruitmentPortal", "RecruitmentPortal.csproj", "{8A20D41B-B58F-7BB4-1925-E342752C16CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecruitmentPortal.Tests", "RecruitmentPortal.Tests\RecruitmentPortal.Tests.csproj", "{52213416-E3BE-65D1-55F4-7B43C37B2FF9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A20D41B-B58F-7BB4-1925-E342752C16CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A20D41B-B58F-7BB4-1925-E342752C16CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A20D41B-B58F-7BB4-1925-E342752C16CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A20D41B-B58F-7BB4-1925-E342752C16CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52213416-E3BE-65D1-55F4-7B43C37B2FF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52213416-E3BE-65D1-55F4-7B43C37B2FF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52213416-E3BE-65D1-55F4-7B43C37B2FF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52213416-E3BE-65D1-55F4-7B43C37B2FF9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA0AC09F-F9E2-47B5-ABBD-DEF0824A8D29}
+	EndGlobalSection
+EndGlobal
